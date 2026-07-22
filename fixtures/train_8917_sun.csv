@@ -1,0 +1,9 @@
+seq,station,code,time,type,node_offset,note
+1,Leeuwarden,lw,08:22,dep,0x09cee,origin (dep board)
+2,Mantgum,mg,08:30,arr,0x08d3e,ref=0x1c96
+3,Sneek,sk,08:42,arr,0x03ccc,ref=0x1c96
+4,IJlst,yt,08:47,arr,0x03912,ref=0x1c96
+5,Workum,wk,08:56,arr,0x0fab8,ref=0x4d70
+6,Hindeloopen,hnp,09:01,arr,0x1a092,ref=0x4d70
+7,Koudum-Molkwerum,kmw,09:06,arr,0x28674,ref=0x4d73
+8,Stavoren,stv,09:11,arr,0x07db2,terminus (arr board)

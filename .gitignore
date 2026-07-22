@@ -1,0 +1,12 @@
+# macOS
+.DS_Store
+
+# Claude Code local settings
+.claude/settings.local.json
+
+# scratch / logs
+*.log
+scratchpad/
+
+# generated outputs — regenerate with: python3 extract_reisplanner.py
+/output/
