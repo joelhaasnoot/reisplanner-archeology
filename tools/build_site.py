@@ -22,9 +22,9 @@ GTFS_OUT_DIR = os.path.join(DOCS, "gtfs")
 ZIP_NAME = "reisplanner-90-91.gtfs.zip"
 ZIP_PATH = os.path.join(GTFS_OUT_DIR, ZIP_NAME)
 
-GTFS_FILES = ["agency.txt", "stops.txt", "routes.txt", "trips.txt",
-              "stop_times.txt", "calendar.txt", "calendar_dates.txt",
-              "transfers.txt", "fare_attributes.txt"]
+GTFS_FILES = ["agency.txt", "feed_info.txt", "stops.txt", "routes.txt",
+              "trips.txt", "stop_times.txt", "calendar.txt",
+              "calendar_dates.txt", "transfers.txt", "fare_attributes.txt"]
 
 
 def rows(name):

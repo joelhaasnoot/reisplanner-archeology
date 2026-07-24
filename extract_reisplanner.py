@@ -265,6 +265,13 @@ def wr(fn, header, rows):
 wr("agency.txt", ["agency_id","agency_name","agency_url","agency_timezone","agency_lang"],
    [["NS","Nederlandse Spoorwegen","https://www.ns.nl","Europe/Amsterdam","nl"]])
 
+wr("feed_info.txt",
+   ["feed_publisher_name","feed_publisher_url","feed_lang",
+    "feed_start_date","feed_end_date","feed_version"],
+   [["reisplanner-archeology — decoded from NS Reisplanner 90/91",
+     "https://github.com/joelhaasnoot/reisplanner-archeology", "nl",
+     VALID_START.strftime("%Y%m%d"), VALID_END.strftime("%Y%m%d"), "90-91"]])
+
 wr("stops.txt", ["stop_id","stop_code","stop_name","stop_lat","stop_lon"],
    [[f"ns{s['idx']}", s["code"], article(s["name"]), "", ""] for s in stations])
 
@@ -290,9 +297,11 @@ for m in sorted(masks):
 wr("calendar_dates.txt", ["service_id","date","exception_type"], cd)
 
 # fare_attributes / fare_rules from the fare table (2e klas enkele reis = price col 2)
-wr("fare_attributes.txt", ["fare_id","price","currency_type","payment_method","transfers"],
+wr("fare_attributes.txt",
+   ["fare_id","price","currency_type","payment_method","transfers","agency_id"],
    [[f"km{struct.unpack_from('<H',d,FARES+i*18)[0]}",
-     f"{struct.unpack_from('<9H',d,FARES+i*18)[2]/100:.2f}","NLG","1",""] for i in range(NFARE)])
+     f"{struct.unpack_from('<9H',d,FARES+i*18)[2]/100:.2f}","NLG","1","","NS"]
+    for i in range(NFARE)])
 
 # trips + stop_times: the FULL decoded timetable.
 # tools/decode_timetable.py reads the section-A node records directly (format
@@ -372,7 +381,7 @@ wr("stop_times.txt", ["trip_id","arrival_time","departure_time","stop_id","stop_
 # guaranteed connections: the stored values are 1 minute (1367 records) and
 # 0 (51), i.e. pairs that are allowed to connect tighter than normal.
 SECB = 0x313a6
-transfers, raw_tr = [], []
+tr_map, raw_tr = {}, []
 for st in stations:
     a = st["aux"]
     if not a:
@@ -392,13 +401,19 @@ for st in stations:
         for f in calls.get((ta, st["idx"]), []):
             for t in calls.get((tb, st["idx"]), []):
                 if f != t and (tripdays.get(f, 0) & tripdays.get(t, 0)):
-                    transfers.append([f"ns{st['idx']}", f"ns{st['idx']}", f, t,
-                                      "2", mins * 60])
+                    # The same (from_trip, to_trip) at a station can be produced
+                    # by more than one raw record; keep the tightest time so the
+                    # GTFS composite key (from/to stop + from/to trip) is unique.
+                    key = (st["idx"], f, t)
+                    if key not in tr_map or mins < tr_map[key]:
+                        tr_map[key] = mins
 with open(os.path.join(OUT, "transfers.csv"), "w", newline="") as f:
     w = csv.writer(f)
     w.writerow(["station_idx","station","train_a","train_b","min_transfer_min"])
     for r in raw_tr:
         w.writerow(r)
+transfers = [[f"ns{s}", f"ns{s}", f, t, "2", m * 60]
+             for (s, f, t), m in tr_map.items()]
 wr("transfers.txt",
    ["from_stop_id","to_stop_id","from_trip_id","to_trip_id","transfer_type","min_transfer_time"],
    transfers)
