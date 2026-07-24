@@ -171,7 +171,10 @@ footer a{color:var(--accent);text-decoration:none}
   <p class="note">The GTFS feed is generated from <code>INLEES.NET</code> by
   <code>extract_reisplanner.py</code> and validated stop-by-stop against the
   original program running in an emulator. Times, running-days (with footnote
-  exceptions), routes, transfers and fares are all decoded from the file.</p>
+  exceptions), routes, transfers and fares are all decoded from the file. Stop
+  coordinates aren’t in the 1990 binary — they’re joined in from the open
+  Rijden&nbsp;de&nbsp;Treinen station dataset and Wikipedia (see
+  <code>data/README.md</code> for per-station provenance).</p>
 
   <footer>
     Source & method on

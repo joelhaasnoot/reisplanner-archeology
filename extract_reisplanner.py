@@ -272,8 +272,20 @@ wr("feed_info.txt",
      "https://github.com/joelhaasnoot/reisplanner-archeology", "nl",
      VALID_START.strftime("%Y%m%d"), VALID_END.strftime("%Y%m%d"), "90-91"]])
 
+# Station coordinates are NOT in INLEES.NET; they are joined in by NS station
+# code from an external rail-station dataset, with Wikipedia filling the rest
+# (foreign, closed-line, ferry and bus stops). Provenance per station lives in
+# data/station_coords*.csv — see data/README.md.
+COORDS = {}
+for fn in ("station_coords.csv", "station_coords_wikipedia.csv"):
+    p = os.path.join(HERE, "data", fn)
+    if os.path.exists(p):
+        for r in csv.DictReader(open(p)):
+            COORDS.setdefault(int(r["idx"]), (r["lat"], r["lon"]))
 wr("stops.txt", ["stop_id","stop_code","stop_name","stop_lat","stop_lon"],
-   [[f"ns{s['idx']}", s["code"], article(s["name"]), "", ""] for s in stations])
+   [[f"ns{s['idx']}", s["code"], article(s["name"]),
+     COORDS.get(s["idx"], ("", ""))[0], COORDS.get(s["idx"], ("", ""))[1]]
+    for s in stations])
 
 # calendar: one service per weekly day-mask seen in the connection graph
 masks = set(b1 for o,b0,b1,ref,t in EVENTS)

@@ -1,0 +1,363 @@
+idx,code,name,lat,lon,match,source_code
+0,a,aachen hbf (d),50.767800,6.091499,name,AHBF
+1,ac,abcoude,52.278500,4.977000,code,AC
+2,ah,arnhem,51.985001,5.899167,code,AH
+3,ahp,arnhem velperpoort,51.985279,5.919445,code,AHP
+4,ahpr,arnhem presikhaaf,51.988056,5.943889,code,AHPR
+5,akl,arkel,51.871944,4.992778,code,AKL
+6,akm,akkrum,53.046391,5.843611,code,AKM
+7,alm,almere cs,52.375030,5.217640,code,ALM
+8,almb,almere buiten,52.394165,5.278056,code,ALMB
+9,almm,almere muziekwijk,52.367500,5.190278,code,ALMM
+10,amf,amersfoort,52.153889,5.370555,code,AMF
+11,amfs,amersfoort schothorst,52.174822,5.403889,code,AMFS
+12,aml,almelo,52.358055,6.653889,code,AML
+14,amr,alkmaar,52.637779,4.739722,code,AMR
+15,amri,almelo de riet,52.341946,6.666667,code,AMRI
+16,amrn,alkmaar noord,52.643890,4.764167,code,AMRN
+17,ana,anna paulowna,52.867222,4.811111,code,ANA
+18,apd,apeldoorn,52.209167,5.970278,code,APD
+19,apg,appingedam,53.325814,6.861958,code,APG
+20,apn,alphen aan den rijn,52.124443,4.657778,code,APN
+21,arn,arnemuiden,51.501667,3.669167,code,ARN
+23,asa,amsterdam amstel,52.346668,4.917778,code,ASA
+24,asb,amsterdam bijlmer,52.312222,4.946944,code,ASB
+25,asd,amsterdam cs,52.378887,4.900278,code,ASD
+26,asdl,amsterdam lelylaan,52.357777,4.833889,code,ASDL
+27,asdm,amsterdam muiderpoort,52.360554,4.931111,code,ASDM
+29,asdz,amsterdam zuid wtc,52.338889,4.872356,code,ASDZ
+30,asn,assen,52.991665,6.570833,code,ASN
+31,ass,amsterdam sloterdijk,52.388889,4.837778,code,ASS
+32,atn,aalten,51.921327,6.578627,code,ATN
+33,atw,antwerpen centraal (b),51.216860,4.421242,code,ATW
+35,aw,aachen west (d),50.780360,6.070715,code,AW
+38,bd,breda,51.595554,4.780000,code,BD
+39,bde,bunde,50.896946,5.736667,code,BDE
+40,bdg,bodegraven,52.081390,4.746111,code,BDG
+41,bdm,bedum,53.306886,6.593054,code,BDM
+42,bdpb,breda-prinsenbeek,51.606388,4.720833,code,BDPB
+43,berch,berchem (b),51.198914,4.433200,code,BERCH
+45,bet,best,51.509998,5.389167,code,BET
+46,bf,baflo,53.360897,6.518558,code,BF
+47,bgn,bergen op zoom,51.493889,4.296111,code,BGN
+48,bh,bad bentheim (d),52.309686,7.158537,code,BH
+49,bhv,bilthoven,52.130001,5.203889,code,BHV
+50,bk,beek-elsloo,50.947498,5.786667,code,BK
+52,bkf,bovenkarspel flora,52.696110,5.252778,code,BKF
+53,bkg,bovenkarspl-grootebroek,52.695000,5.237778,code,BKG
+55,bkl,breukelen,52.171490,4.990600,code,BKL
+56,bl,beilen,52.854721,6.521111,code,BL
+57,bll,bloemendaal,52.404167,4.627500,code,BLL
+58,bmn,brummen,52.091110,6.146945,code,BMN
+59,bmr,boxmeer,51.644522,5.939033,code,BMR
+60,bn,borne,52.298889,6.748055,code,BN
+61,bnc,barneveld centrum,52.139999,5.590278,code,BNC
+62,bnk,bunnik,52.063057,5.194445,code,BNK
+63,bnn,barneveld noord,52.161388,5.598055,code,BNN
+65,bp,buitenpost,53.256455,6.144650,code,BP
+66,br,blerick,51.372501,6.155000,code,BR
+68,brd,barendrecht,51.854721,4.553333,code,BRD
+70,bressx,bressoux (b),50.643829,5.611254,code,BRESSX
+72,brn,baarn,52.208332,5.280833,code,BRN
+74,brusc,brussel centraal (b),50.845175,4.357131,code,BRUSC
+75,brusn,brussel noord (b),50.859658,4.360854,code,BRUSN
+76,brusz,brussel zuid (b),50.836782,4.336922,code,BRUSZ
+77,bsd,beesd,51.899445,5.194445,code,BSD
+78,bsk,boskoop,52.077778,4.646945,code,BSK
+79,bsmz,bussum zuid,52.265835,5.163055,code,BSMZ
+80,btl,boxtel,51.584330,5.319120,code,BTL
+81,buende,buende (d),52.202075,8.573876,code,BUENDE
+82,bv,beverwijk,52.478333,4.656667,code,BV
+83,bzl,kapelle-biezelinge,51.480835,3.956111,code,BZL
+84,cas,castricum,52.545834,4.658611,code,CAS
+85,ck,cuijk,51.726683,5.874295,code,CK
+86,cl,culemborg,51.946667,5.226944,code,CL
+87,co,coevorden,52.663612,6.735556,code,CO
+88,cps,capelle schollevaar,51.954166,4.584167,code,CPS
+89,cvm,chevremont,50.876110,6.059722,code,CVM
+90,da,daarlerveen,52.440770,6.575995,code,DA
+91,db,driebergen-zeist,52.065277,5.258611,code,DB
+92,ddn,delden,52.259998,6.716111,code,DDN
+93,ddr,dordrecht,51.807220,4.668334,code,DDR
+94,ddrs,dordrecht stadspolders,51.801945,4.716667,code,DDRS
+95,ddzd,dordrecht zuid,51.790001,4.671389,code,DDZD
+96,dei,deinum,53.188811,5.728157,code,DEI
+97,did,didam,51.933502,6.132411,code,DID
+99,dl,dalfsen,52.498333,6.258611,code,DL
+100,dld,den dolder,52.140278,5.242778,code,DLD
+101,dln,dalen,52.694168,6.758056,code,DLN
+102,dmn,diemen,52.345150,4.967566,code,DMN
+104,dn,deurne,51.455833,5.788889,code,DN
+105,dr,dieren,52.044998,6.103055,code,DR
+106,drh,driehuis,52.442501,4.638055,code,DRH
+107,drp,dronrijp,53.177809,5.634741,code,DRP
+109,dt,delft,52.006668,4.356389,code,DT
+110,dtc,doetinchem,51.958596,6.296215,code,DTC
+111,dtch,doetinchem de huet,51.959141,6.259852,code,DTCH
+114,duisb,duisburg (d),51.429779,6.775904,code,DUISB
+116,dussel,duesseldorf (d),51.220146,6.793137,code,DUSSEL
+117,dv,deventer,52.257500,6.160555,code,DV
+118,dvc,deventer colmschate,52.250278,6.214445,code,DVC
+119,dvn,duiven,51.943333,6.014722,code,DVN
+120,dvnk,de vink,52.147221,4.456389,code,DVNK
+121,dz,delfzijl,53.333663,6.924080,code,DZ
+122,dzw,delfzijl west,53.332083,6.906909,code,DZW
+123,ec,echt,51.100555,5.878889,code,EC
+124,ed,ede-wageningen,52.027779,5.673056,code,ED
+125,edc,ede centrum,52.043610,5.668334,code,EDC
+126,edn,eijsden,50.771946,5.710000,code,EDN
+127,egh,eygelshoven,50.890556,6.045000,code,EGH
+129,ehv,eindhoven,51.443333,5.481389,code,EHV
+130,ekz,enkhuizen,52.699165,5.286389,code,EKZ
+131,em,emmerich (d),51.834283,6.255718,code,EM
+132,eml,ermelo,52.301666,5.614722,code,EML
+133,emn,emmen,52.790001,6.899445,code,EMN
+135,es,enschede,52.222500,6.890000,code,ES
+136,esn,essen (b),51.462610,4.451290,code,ESN
+137,esnd,essen (d),51.462610,4.451290,name,ESN
+138,est,elst,51.916943,5.855000,code,EST
+139,etn,etten-leur,51.575001,4.635833,code,ETN
+140,fn,franeker,53.182449,5.548309,code,FN
+141,fvs,vise (b),50.737810,5.692320,code,FVS
+142,gbg,gramsbergen,52.609165,6.675833,code,GBG
+143,gd,gouda,52.017502,4.704444,code,GD
+145,gdm,geldermalsen,51.883010,5.271270,code,GDM
+147,gentsp,gent st pieters (b),51.036174,3.710847,name,FGSP
+148,gk,grijpskerk,53.255740,6.309779,code,GK
+149,gln,geleen oost,50.966946,5.843056,code,GLN
+151,gn,groningen,53.210556,6.564722,code,GN
+152,gnd,hardinxveld-giessendam,51.830555,4.835834,code,GND
+153,gnn,groningen noord,53.230147,6.556317,code,GNN
+154,go,goor,52.230278,6.584445,code,GO
+157,gp,geldrop,51.419724,5.550556,code,GP
+158,gr,gorinchem,51.833889,4.968333,code,GR
+161,gs,goes,51.498055,3.890556,code,GS
+162,gv,den haag hs,52.069721,4.322500,code,GV
+163,gvc,den haag cs,52.080276,4.325000,code,GVC
+164,gvm,den haag mariahoeve,52.090557,4.369444,code,GVM
+165,gw,grouw-irnsum,53.088890,5.822500,code,GW
+166,gz,gilze-rijen,51.583611,4.926111,code,GZ
+167,had,heemstede-aerdenhout,52.359165,4.606667,code,HAD
+168,hagen,hagen (d),51.362747,7.460249,code,HAGEN
+170,hann,hannover (d),52.377040,9.741676,code,HANN
+171,hb,hoensbroek,50.905556,5.930555,code,HB
+172,hd,harderwijk,52.337502,5.619722,code,HD
+173,hdb,hardenberg,52.572777,6.628611,code,HDB
+174,hde,harde ('t),52.409168,5.893611,code,HDE
+175,hdg,hardegarijp,53.218778,5.934543,code,HDG
+176,hdr,den helder,52.955276,4.761111,code,HDR
+178,hdrz,den helder zuid,52.932499,4.764167,code,HDRZ
+179,hfd,hoofddorp,52.293335,4.700555,code,HFD
+180,hgl,hengelo,52.261665,6.793889,code,HGL
+181,hglo,hengelo oost,52.268890,6.819445,code,HGLO
+182,hgv,hoogeveen,52.733891,6.473611,code,HGV
+183,hgz,hoogezand-sappemeer,53.159818,6.770754,code,HGZ
+185,hk,heemskerk,52.495277,4.686944,code,HK
+186,hks,hoogkarspel,52.690556,5.183889,code,HKS
+189,hlg,harlingen,53.170420,5.425193,code,HLG
+190,hlgh,harlingen haven,53.174917,5.411289,code,HLGH
+191,hlm,haarlem,52.387779,4.638333,code,HLM
+192,hlo,heiloo,52.599445,4.700555,code,HLO
+193,hm,helmond,51.475555,5.661944,code,HM
+194,hmbh,helmond brouwhuis,51.470680,5.701770,code,HMBH
+195,hmn,hemmen-dodewaard,51.922213,5.673725,code,HMN
+196,hn,hoorn,52.644722,5.055555,code,HN
+197,hnk,hoorn kersenboogerd,52.653610,5.085556,code,HNK
+198,hno,heino,52.427223,6.221111,code,HNO
+199,hnp,hindeloopen,52.946490,5.423063,code,HNP
+201,hon,holten,52.283890,6.420278,code,HON
+202,hor,hollandsche rading,52.177776,5.179167,code,HOR
+203,hr,heerenveen,52.961388,5.914166,code,HR
+204,hrl,heerlen,50.890835,5.975000,code,HRL
+205,hrn,haren,53.176109,6.617222,code,HRN
+206,hrt,horst-sevenum,51.426388,6.042222,code,HRT
+207,ht,hertogenbosch ('s),51.690480,5.293620,code,HT
+208,htn,houten,52.034020,5.168210,code,HTN
+209,hto,hertogenbosch oost ('s),51.700554,5.318333,code,HTO
+211,hvs,hilversum,52.225834,5.181944,code,HVS
+213,hvsp,hilversum sportpark,52.216110,5.187222,code,HVSP
+214,hwd,heerhugowaard,52.669724,4.822778,code,HWD
+215,hze,heeze,51.384998,5.569445,code,HZE
+217,kbd,krabbendijke,51.433334,4.116944,code,KBD
+218,kbk,klarenbeek,52.178055,6.083611,code,KBK
+220,klp,veenendaal-de klomp,52.045834,5.573889,code,KLP
+221,kma,krommenie-assendelft,52.495110,4.754170,code,KMA
+222,kmr,klimmen-ransdaal,50.866390,5.890555,code,KMR
+223,kmw,koudum-molkwerum,52.902820,5.410691,code,KMW
+224,kn,kaldenkirchen (d),51.327184,6.203225,code,KN
+226,koln,koeln hbf (d),50.943216,6.958921,code,KOLN
+228,kpn,kampen,52.559723,5.921667,code,KPN
+230,krd,kerkrade centrum,50.861668,6.057500,code,KRD
+231,krg,kruiningen-yerseke,51.465000,4.037222,code,KRG
+233,ktr,kesteren,51.931387,5.583347,code,KTR
+234,kw,kropswolde,53.161736,6.722088,code,KW
+236,laa,den haag laan van noi,52.078609,4.342778,code,LAA
+237,lc,lochem,52.166668,6.426389,code,LC
+238,ldl,leiden lammenschans,52.146946,4.492500,code,LDL
+239,ldm,leerdam,51.894722,5.091389,code,LDM
+241,ledn,leiden,52.166111,4.481667,code,LEDN
+242,leer,leer (d),53.231650,7.465283,code,LEER
+243,leuven,leuven (b),50.881360,4.715680,code,LEUVEN
+245,lg,landgraaf,50.896389,6.019166,code,LG
+246,lkr,lokeren (b),51.281610,4.434123,code,LKR
+247,lls,lelystad centrum,52.507778,5.472778,code,LLS
+249,lp,loppersum,53.334714,6.747262,code,LP
+250,ltn,lunteren,52.085278,5.624444,code,LTN
+251,ltv,lichtenvoorde-groenlo,52.011880,6.596410,code,LTV
+252,luik,luik (b),50.624360,5.566480,code,LUIK
+253,lut,geleen-lutterade,50.975555,5.824722,code,LUT
+255,lw,leeuwarden,53.195835,5.792222,code,LW
+257,mas,maarssen,52.135277,5.033611,code,MAS
+258,mcgb,moenchen-gladbach (d),51.196583,6.446111,code,MCGB
+260,mdb,middelburg,51.494720,3.617222,code,MDB
+261,mech,mechelen (b),51.017580,4.483130,code,MECH
+262,mes,meerssen,50.882879,5.750999,code,MES
+264,mg,mantgum,53.129637,5.713200,code,MG
+265,minden,minden (d),52.290138,8.934728,code,MINDEN
+267,mp,meppel,52.690834,6.197500,code,MP
+268,mrb,marienberg,52.509445,6.575278,code,MRB
+269,mrn,maarn,52.064167,5.370000,code,MRN
+272,mt,maastricht,50.850277,5.705555,code,MT
+273,mth,martenshoek,53.160723,6.740299,code,MTH
+274,mtr,maastricht randwyck,50.838612,5.717222,code,MTR
+275,na,nieuw amsterdam,52.718613,6.848611,code,NA
+276,ndb,naarden-bussum,52.280277,5.156944,code,NDB
+277,neuss,neuss (d),51.204440,6.684680,code,NEUSS
+278,nh,nuth,50.919445,5.892778,code,NH
+280,nkk,nijkerk,52.222221,5.493889,code,NKK
+281,nm,nijmegen,51.843613,5.852222,code,NM
+282,nmd,nijmegen dukenburg,51.824165,5.795556,code,NMD
+283,nmh,nijmegen heyendaal,51.826946,5.867500,code,NMH
+284,ns,nunspeet,52.370834,5.785278,code,NS
+285,nsch,nieuweschans,53.184400,7.199370,code,NSCH
+286,nvd,nijverdal,52.366111,6.462000,code,NVD
+287,nvp,nieuw vennep,52.258888,4.645555,code,NVP
+288,nwk,nieuwerkerk a d ijssel,51.965279,4.616944,code,NWK
+290,o,oss,51.765556,5.532222,code,O
+291,obd,obdam,52.678055,4.907222,code,OBD
+292,oberh,oberhausen (d),51.475120,6.852038,code,OBERH
+293,odb,oudenbosch,51.587776,4.533333,code,ODB
+294,odz,oldenzaal,52.306389,6.934722,code,ODZ
+295,oeynh,bad oeynhausen (d),52.205461,8.796932,code,OEYNH
+297,omn,ommen,52.509445,6.415833,code,OMN
+302,op,opheusden,51.926161,5.637115,code,OP
+303,osnh,osnabruck hbf (d),52.272851,8.061781,code,OSNH
+304,ost,olst,52.334721,6.113056,code,OST
+305,ot,oisterwijk,51.582222,5.194167,code,OT
+306,otb,oosterbeek,51.994999,5.840000,code,OTB
+307,ovn,overveen,52.391109,4.606111,code,OVN
+308,ow,oss west,51.758057,5.505556,code,OW
+309,paris,paris nord (f),48.879770,2.355750,code,PARIS
+310,pmo,purmerend overwhere,52.511391,4.968333,code,PMO
+311,pmr,purmerend,52.503056,4.953611,code,PMR
+314,pt,putten,52.264999,5.575278,code,PT
+316,rai,amsterdam rai,52.337223,4.890278,code,RAI
+317,rat,raalte,52.391666,6.277500,code,RAT
+318,rb,rilland-bath,51.422779,4.161111,code,RB
+319,rd,roodeschool,53.421262,6.758700,code,RD
+324,rh,rheden,52.010100,6.031400,code,RH
+325,rheine,rheine (d),52.276299,7.434255,code,RHEINE
+327,rhn,rhenen,51.958611,5.578333,code,RHN
+328,rl,ruurlo,52.081089,6.449266,code,RL
+329,rlb,rotterdam lombardijen,51.880001,4.531389,code,RLB
+330,rm,roermond,51.193054,5.994167,code,RM
+331,rs,rosmalen,51.714722,5.368055,code,RS
+332,rsd,roosendaal,51.540279,4.458333,code,RSD
+333,rsn,rijssen,52.312222,6.520278,code,RSN
+334,rsw,rijswijk,52.039722,4.319167,code,RSW
+335,rta,rotterdam alexander,51.951946,4.553611,code,RTA
+336,rtb,rotterdam blaak,51.920277,4.488889,code,RTB
+338,rtd,rotterdam cs,51.924999,4.468889,code,RTD
+341,rtn,rotterdam noord,51.942223,4.481667,code,RTN
+343,rtz,rotterdam zuid,51.904446,4.510278,code,RTZ
+344,rv,reuver,51.283219,6.078959,code,RV
+345,rvs,ravenstein,51.794167,5.635833,code,RVS
+346,sbk,spaubeek,50.943270,5.850529,code,SBK
+347,sd,soestdijk,52.183613,5.300000,code,SD
+348,sda,scheemda,53.165536,6.977778,code,SDA
+349,sdm,schiedam-rotterdam west,51.921244,4.408994,code,SDM
+351,sdt,sliedrecht,51.829723,4.778333,code,SDT
+352,sgl,houthem-st gerlach,50.873333,5.797222,code,SGL
+353,sgn,schagen,52.784443,4.805278,code,SGN
+354,shl,schiphol,52.309444,4.761944,code,SHL
+355,sk,sneek,53.032869,5.652397,code,SK
+356,sknd,sneek noord,53.040932,5.663181,code,SKND
+357,sm,swalmen,51.235820,6.032280,code,SM
+359,sn,schinnen,50.939167,5.874444,code,SN
+360,sog,schin op geul,50.856388,5.872222,code,SOG
+362,sptn,santpoort noord,52.433887,4.632500,code,SPTN
+363,sptz,santpoort zuid,52.419724,4.631389,code,SPTZ
+365,srn,susteren,51.061390,5.863056,code,SRN
+366,st,soest,52.173332,5.310000,code,ST
+367,std,sittard,51.001667,5.858611,code,STD
+368,stm,stedum,53.326209,6.687555,code,STM
+369,stv,stavoren,52.886553,5.360021,code,STV
+370,stz,soest zuid,52.165279,5.303056,code,STZ
+371,swd,sauwerd,53.291130,6.540400,code,SWD
+372,swk,steenwijk,52.791511,6.114556,code,SWK
+373,tb,tilburg,51.560555,5.083611,code,TB
+374,tbg,terborg,51.922455,6.364247,code,TBG
+376,tg,tegelen,51.338940,6.142530,code,TG
+377,tl,tiel,51.889446,5.422222,code,TL
+383,uhm,uithuizermeeden,53.414584,6.720298,code,UHM
+384,uhz,uithuizen,53.409957,6.674887,code,UHZ
+386,ust,usquert,53.401474,6.609378,code,UST
+387,ut,utrecht cs,52.088890,5.110278,code,UT
+388,utg,uitgeest,52.521667,4.701667,code,UTG
+389,utl,utrecht lunetten,52.065556,5.144166,name,UTLN
+390,uto,utrecht overvecht,52.110001,5.124722,code,UTO
+393,vb,voorburg,52.066666,4.359445,code,VB
+395,vd,vorden,52.107195,6.317046,code,VD
+397,vdl,voerendaal,50.887222,5.930278,code,VDL
+400,vg,vught,51.655556,5.291945,code,VG
+401,vhp,vroomshoop,52.457192,6.569668,code,VHP
+402,viers,viersen (d),51.255160,6.403880,code,VIERS
+403,vk,valkenburg,50.869720,5.832222,code,VK
+404,vl,venlo,51.363609,6.172778,code,VL
+405,vlb,vierlingsbeek,51.591930,5.997140,code,VLB
+407,vndc,veenendaal centrum,52.020000,5.548611,code,VNDC
+408,vndw,veenendaal west,52.028057,5.531389,code,VNDW
+409,vp,velp,51.994720,5.980278,code,VP
+410,vry,venray,51.526568,6.014178,code,VRY
+412,vs,vlissingen,51.445835,3.595278,code,VS
+413,vss,vlissingen souburg,51.464722,3.595278,code,VSS
+414,vst,voorschoten,52.125278,4.432500,code,VST
+415,vsv,varsseveld,51.937257,6.458839,code,VSV
+416,vtn,vleuten,52.103056,5.007404,code,VTN
+419,vz,vriezenveen,52.402030,6.600410,code,VZ
+420,wad,waddinxveen,52.044167,4.649722,code,WAD
+421,wadn,waddinxveen noord,52.055000,4.648334,code,WADN
+422,wc,wijchen,51.811668,5.730834,code,WC
+423,wd,woerden,52.084999,4.893611,code,WD
+424,wdn,wierden,52.361389,6.591667,code,WDN
+425,wesel,wesel (d),51.655833,6.627222,code,WESEL
+426,wf,wolfheze,52.005554,5.793611,code,WF
+427,wfm,warffum,53.390843,6.567136,code,WFM
+428,wh,wijhe,52.390278,6.140555,code,WH
+431,wk,workum,52.972486,5.456429,code,WK
+432,wl,wehl,51.957806,6.213844,code,WL
+433,wm,wormerveer,52.489166,4.792222,code,WM
+434,wp,weesp,52.312778,5.043056,code,WP
+435,wr,weener (d),53.163110,7.344200,code,WR
+436,ws,winschoten,53.139238,7.035101,code,WS
+437,wsm,winsum,53.330099,6.520290,code,WSM
+438,wt,weert,51.248611,5.703611,code,WT
+439,wv,wolvega,52.880833,6.003611,code,WV
+440,ww,winterswijk,51.967731,6.715518,code,WW
+441,wz,wezep,52.454166,6.002500,code,WZ
+442,yt,ijlst,53.014661,5.616080,name,IJT
+443,za,zetten-andelst,51.920056,5.722841,code,ZA
+444,zb,zuidbroek,53.159612,6.867914,code,ZB
+445,zbm,zaltbommel,51.808887,5.263333,code,ZBM
+447,zd,zaandam,52.438889,4.813611,code,ZD
+448,zdk,zaandam kogerveld,52.456665,4.820278,code,ZDK
+449,zh,zuidhorn,53.248629,6.406236,code,ZH
+450,zl,zwolle,52.504723,6.091944,code,ZL
+451,zlw,lage zwaluwe,51.691113,4.663055,code,ZLW
+452,zp,zutphen,52.145279,6.194167,code,ZP
+454,ztm,zoetermeer,52.047501,4.477222,code,ZTM
+459,ztmo,zoetermeer oost,52.046391,4.492778,code,ZTMO
+463,zv,zevenaar,51.923054,6.071944,code,ZV
+464,zvb,zevenbergen,51.640420,4.609040,code,ZVB
+465,zvt,zandvoort aan zee,52.375278,4.532778,code,ZVT
+466,zwd,zwijndrecht,51.814999,4.641667,code,ZWD

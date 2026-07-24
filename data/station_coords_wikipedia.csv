@@ -1,0 +1,108 @@
+idx,code,name,lat,lon,kind,wikidata,source_url
+13,amld,ameland,53.450278,5.753611,island,Q208259,https://nl.wikipedia.org/wiki/Ameland
+22,arnsb,arnsberg (d),51.405278,8.066667,station,Q800396,https://de.wikipedia.org/wiki/Bahnhof_Arnsberg_(Westfalen)
+28,asdv,amsterdam de vlugtlaan,52.379444,4.838056,station,Q2117320,https://nl.wikipedia.org/wiki/Station_Amsterdam_De_Vlugtlaan
+34,aulnoy,aulnoye (f),50.205000,3.836389,place,Q43411,https://fr.wikipedia.org/wiki/Aulnoye-Aymeries
+36,badhar,bad harzburg (d),51.887810,10.555000,station,Q9163986,https://de.wikipedia.org/wiki/Bahnhof_Bad_Harzburg
+37,badwil,bad wildungen (d),51.119630,9.136827,station,Q25088576,https://de.wikipedia.org/wiki/Bahnhof_Bad_Wildungen
+44,bestw,bestwig (d),51.357500,8.386667,station,Q10928,https://de.wikipedia.org/wiki/Bestwig
+51,bkb,breskens boulevard,51.395000,3.556944,place,Q641390,https://nl.wikipedia.org/wiki/Breskens
+54,bkhn,breskens haven,51.395000,3.556944,place,Q641390,https://nl.wikipedia.org/wiki/Breskens
+64,bochum,bochum (d),51.478506,7.222781,station,Q453861,https://de.wikipedia.org/wiki/Bochum_Hauptbahnhof
+67,brauns,braunschweig (d),52.252222,10.539722,station,Q318930,https://de.wikipedia.org/wiki/Braunschweig_Hauptbahnhof
+69,bremen,bremen (d),53.083056,8.813611,station,Q631094,https://de.wikipedia.org/wiki/Bremen_Hauptbahnhof
+71,brilon,brilon wald (d),51.349100,8.576100,station,Q800569,https://de.wikipedia.org/wiki/Bahnhof_Brilon_Wald
+73,brugge,brugge (b),51.197222,3.217222,station,Q800580,https://nl.wikipedia.org/wiki/Station_Brugge
+98,dins,dinslaken (d),51.567526,6.737459,station,Q5278719,https://de.wikipedia.org/wiki/Bahnhof_Dinslaken
+103,dmp,driemanspolder,52.048333,4.477222,station,Q1809110,https://nl.wikipedia.org/wiki/Driemanspolder_(sneltramhalte)
+108,drt,druten koekoeksnest,51.888889,5.604444,place,Q932142,https://nl.wikipedia.org/wiki/Druten
+112,dtwa,zoeterm. delftsewallen,52.047500,4.477500,station,Q430732,https://nl.wikipedia.org/wiki/Station_Zoetermeer
+113,dtz,delft zuid,51.990556,4.365000,station,Q2096609,https://nl.wikipedia.org/wiki/Station_Delft_Campus
+115,dulken,duelken (d),51.250833,6.330833,place,Q896146,https://de.wikipedia.org/wiki/D%C3%BClken
+128,ehb,eindhoven beukenlaan,51.450833,5.456111,station,Q5317675,https://nl.wikipedia.org/wiki/Station_Eindhoven_Strijp-S
+134,emnb,emmen bargeres,52.758056,6.889722,station,Q4916257,https://nl.wikipedia.org/wiki/Station_Emmen_Bargeres
+144,gdk,geerdijk,52.476111,6.566667,station,Q2488611,https://nl.wikipedia.org/wiki/Station_Geerdijk
+146,gentdp,gent dampoort (b),51.055556,3.740833,station,Q3096519,https://nl.wikipedia.org/wiki/Station_Gent-Dampoort
+150,gm,gemert,51.531111,5.719444,place,Q9836,https://nl.wikipedia.org/wiki/Gemert-Bakel
+155,goslar,goslar (d),51.911111,10.423056,station,Q18616524,https://de.wikipedia.org/wiki/Bahnhof_Goslar
+156,gouvy,gouvy (b),50.190047,5.953350,station,Q3096564,https://nl.wikipedia.org/wiki/Station_Gouvy
+159,greven,grevenbroich (d),51.093266,6.580173,station,Q800839,https://de.wikipedia.org/wiki/Bahnhof_Grevenbroich
+160,grv,grave,51.759722,5.740833,place,Q9839,"https://en.wikipedia.org/wiki/Grave,_Netherlands"
+169,hamh,hamburg hbf (d),53.552778,10.006389,station,Q6456,https://de.wikipedia.org/wiki/Hamburg_Hauptbahnhof
+177,hdrh,den helder haven,52.956389,4.760833,station,Q800655,https://nl.wikipedia.org/wiki/Station_Den_Helder
+184,hildes,hildesheim (d),52.160556,9.953889,station,Q324775,https://de.wikipedia.org/wiki/Hildesheim_Hauptbahnhof
+187,hld,hoek van holland haven,51.981111,4.128611,place,Q990130,https://nl.wikipedia.org/wiki/Hoek_van_Holland
+188,hlds,hoek van holland strand,51.981111,4.128611,place,Q990130,https://nl.wikipedia.org/wiki/Hoek_van_Holland
+200,holw,holwerd,53.364700,5.905189,station,Q1953277,https://nl.wikipedia.org/wiki/Station_Holwerd
+210,hul,hulst,51.276400,4.047261,station,Q800936,https://nl.wikipedia.org/wiki/Station_Hulst
+212,hvsn,hilversum noord,52.237778,5.173889,station,Q2079829,https://nl.wikipedia.org/wiki/Station_Hilversum_Media_Park
+216,ibbenb,ibbenbueren (d),52.276190,7.715800,place,Q4175,https://de.wikipedia.org/wiki/Ibbenb%C3%BCren
+219,kbw,koog bloemwijk,52.457778,4.805556,station,Q783692,https://nl.wikipedia.org/wiki/Station_Koog_aan_de_Zaan
+225,knokke,knokke (b),51.339722,3.284722,station,Q2785861,https://nl.wikipedia.org/wiki/Station_Knokke
+227,korb,korbach (d),51.278427,8.873122,station,Q801025,https://de.wikipedia.org/wiki/Korbach_Hauptbahnhof
+229,krb,kranenburg (d),51.789722,6.007222,place,Q243266,https://de.wikipedia.org/wiki/Kranenburg_(Niederrhein)
+232,krgv,kruiningen haven,51.448056,4.034167,place,Q1025055,https://nl.wikipedia.org/wiki/Kruiningen
+235,kzd,koog-zaandijk,52.458889,4.802778,place,Q2260299,https://nl.wikipedia.org/wiki/Koog_aan_de_Zaan
+240,ldv,leidschendam-voorburg,52.066515,4.358694,station,Q7941701,https://nl.wikipedia.org/wiki/Station_Voorburg
+244,ley,zoeterm. de leyens,52.047500,4.477500,station,Q430732,https://nl.wikipedia.org/wiki/Station_Zoetermeer
+248,lohne,loehne (d),52.189722,8.688333,place,Q14863,https://de.wikipedia.org/wiki/L%C3%B6hne
+254,lux,luxemburg (l),49.611667,6.131944,place,Q1842,https://en.wikipedia.org/wiki/Luxembourg_City
+256,lwo,lauwersoog,53.403889,6.218889,place,Q1007150,https://nl.wikipedia.org/wiki/Lauwersoog
+259,md,made g.schalckenstr.,51.676389,4.792500,place,Q985372,https://nl.wikipedia.org/wiki/Made_(Noord-Brabant)
+263,mesch,meschede (d),51.350278,8.283611,station,Q5632,https://de.wikipedia.org/wiki/Meschede
+266,mons,mons (b),50.453870,3.942622,station,Q3097068,https://nl.wikipedia.org/wiki/Station_Bergen_(Belgi%C3%AB)
+270,mss,maassluis,51.916389,4.253611,station,Q1868690,https://nl.wikipedia.org/wiki/Maassluis_Centrum_(metrostation)
+271,msw,maassluis west,51.925556,4.236111,station,Q2333211,https://nl.wikipedia.org/wiki/Maassluis_West_(metrostation)
+279,niklaa,st niklaas (b),51.171944,4.144167,station,Q1907355,https://nl.wikipedia.org/wiki/Station_Sint-Niklaas
+289,nwl,schiedam nieuwland,51.922500,4.383056,station,Q2044735,https://nl.wikipedia.org/wiki/Schiedam_Nieuwland_(metrostation)
+296,olden,oldenburg hbf (d),53.143611,8.222500,station,Q543350,https://de.wikipedia.org/wiki/Oldenburg_(Oldb)_Hauptbahnhof
+298,oosb,oosterhout busstation,51.643333,4.856667,place,Q12912978,https://nl.wikipedia.org/wiki/Oosterhout_(Noord-Brabant)
+299,ooss,oosterhout sterrenlaan,51.643333,4.856667,place,Q12912978,https://nl.wikipedia.org/wiki/Oosterhout_(Noord-Brabant)
+300,oosten,oostende (b),51.228889,2.925833,station,Q2292734,https://nl.wikipedia.org/wiki/Station_Oostende
+301,oosz,oosterhout zuiderhout,51.643333,4.856667,place,Q12912978,https://nl.wikipedia.org/wiki/Oosterhout_(Noord-Brabant)
+312,pnk,pijnacker,52.020072,4.437092,station,Q14387131,https://nl.wikipedia.org/wiki/Station_Pijnacker
+313,pph,perkpolderhaven,51.397778,4.016111,place,Q2206626,https://nl.wikipedia.org/wiki/Perkpolder
+315,quenti,st quentin (f),49.839701,3.297163,station,Q2031679,https://fr.wikipedia.org/wiki/Gare_de_Saint-Quentin
+320,rdr,berkel en rodenrijs,51.976111,4.460556,station,Q7356536,https://nl.wikipedia.org/wiki/Rodenrijs_(metrostation)
+321,rdvb,raamsdonksv.busstation,51.699622,4.871508,station,Q2113245,https://nl.wikipedia.org/wiki/Station_Raamsdonksveer
+322,rdve,raamsdonksv.essenboom,51.699622,4.871508,station,Q2113245,https://nl.wikipedia.org/wiki/Station_Raamsdonksveer
+323,rdvk,raamsdonksv.keizersveer,51.699622,4.871508,station,Q2113245,https://nl.wikipedia.org/wiki/Station_Raamsdonksveer
+326,rheydt,rheydt (d),51.163108,6.439711,station,Q130508,https://de.wikipedia.org/wiki/Rheydt_Hauptbahnhof
+337,rtbw,rotterdam bergweg,51.932222,4.470833,station,Q2409435,https://nl.wikipedia.org/wiki/Station_Rotterdam_Bergweg
+339,rth,rotterdam hofplein,51.926944,4.479167,station,Q5139929,https://nl.wikipedia.org/wiki/Station_Rotterdam_Hofplein
+340,rtkw,rotterdam kleiweg,51.945556,4.466389,station,Q4352177,https://nl.wikipedia.org/wiki/Station_Rotterdam_Kleiweg
+342,rtwp,rotterdam wilgenplas,51.960833,4.462222,station,Q14387332,https://nl.wikipedia.org/wiki/Station_Rotterdam_Wilgenplas
+350,sdn,soestduinen,52.145000,5.299167,station,Q2549510,https://nl.wikipedia.org/wiki/Station_Soestduinen
+358,smo,schiermonnikoog,53.489167,6.202222,island,Q208011,https://nl.wikipedia.org/wiki/Schiermonnikoog
+361,spm,sappemeer oost,53.158889,6.795833,station,Q47267,https://nl.wikipedia.org/wiki/Station_Sappemeer_Oost
+364,spv,simpelveld,50.831389,5.978056,station,Q2125635,https://nl.wikipedia.org/wiki/Station_Simpelveld
+375,tbwt,tilburg west,51.565278,5.051389,station,Q970524,https://nl.wikipedia.org/wiki/Station_Tilburg_Universiteit
+378,tnz,terneuzen,51.329614,3.825667,station,Q1984118,https://nl.wikipedia.org/wiki/Station_Terneuzen
+379,troisp,troisponts (b),50.369125,5.873181,station,Q2256421,https://nl.wikipedia.org/wiki/Station_Trois-Ponts
+380,tsl,terschelling,53.401111,5.331389,island,Q204412,https://nl.wikipedia.org/wiki/Terschelling
+381,tx,texel,53.085931,4.813936,island,Q9966,https://nl.wikipedia.org/wiki/Texel
+382,ud,uden,51.655000,5.620833,station,Q2481207,https://nl.wikipedia.org/wiki/Station_Uden
+385,urk,urk,52.661667,5.600000,island,Q273746,https://nl.wikipedia.org/wiki/Urk
+391,uts,utrecht streekbushaltes,52.089316,5.109972,station,Q575655,https://nl.wikipedia.org/wiki/Station_Utrecht_Centraal
+392,v,kleve (d),51.789558,6.146203,station,Q2376465,https://de.wikipedia.org/wiki/Bahnhof_Kleve
+394,vbl,voorburg 't loo,52.082222,4.365833,station,Q7941698,https://nl.wikipedia.org/wiki/Voorburg_%27t_Loo_(metro-_en_sneltramhalte)
+396,vdg,vlaardingen centrum,51.903056,4.344167,station,Q1963260,https://nl.wikipedia.org/wiki/Vlaardingen_Centrum_(metrostation)
+398,vdo,vlaardingen oost,51.910000,4.361667,station,Q2578105,https://nl.wikipedia.org/wiki/Vlaardingen_Oost_(metrostation)
+399,vdw,vlaardingen west,51.903889,4.314167,station,Q7938137,https://nl.wikipedia.org/wiki/Vlaardingen_West_(metrostation)
+406,vld,vlieland,53.258333,4.955833,island,Q207851,https://nl.wikipedia.org/wiki/Vlieland
+411,vryb,venray busstation,51.526389,6.014167,station,Q2515711,https://nl.wikipedia.org/wiki/Station_Venray
+417,vv,visvliet,53.256203,6.247703,station,Q2248842,https://nl.wikipedia.org/wiki/Station_Visvliet
+418,vwd,veenwouden,53.235278,5.989722,station,Q426233,https://nl.wikipedia.org/wiki/Station_Feanw%C3%A2lden
+429,willin,willingen (d),51.293333,8.603056,station,Q92914573,https://de.wikipedia.org/wiki/Bahnhof_Willingen
+430,witten,witten (d),51.435556,7.329722,station,Q470060,https://de.wikipedia.org/wiki/Witten_Hauptbahnhof
+446,zcw,zoeterm. centrum west,52.047500,4.477500,station,Q430732,https://nl.wikipedia.org/wiki/Station_Zoetermeer
+453,zsh,zoeterm. stadhuis,52.047500,4.477500,station,Q430732,https://nl.wikipedia.org/wiki/Station_Zoetermeer
+455,ztmb,zoeterm. buytenwegh,52.047500,4.477500,station,Q430732,https://nl.wikipedia.org/wiki/Station_Zoetermeer
+456,ztmd,zoeterm. dorp,52.047500,4.477500,station,Q430732,https://nl.wikipedia.org/wiki/Station_Zoetermeer
+457,ztml,zoeterm. leidsewallen,52.047500,4.477500,station,Q430732,https://nl.wikipedia.org/wiki/Station_Zoetermeer
+458,ztmm,zoeterm. meerzicht,52.047500,4.477500,station,Q430732,https://nl.wikipedia.org/wiki/Station_Zoetermeer
+460,ztmp,zoeterm. palenstein,52.047500,4.477500,station,Q430732,https://nl.wikipedia.org/wiki/Station_Zoetermeer
+461,ztms,zoeterm. seghwaert,52.047500,4.477500,station,Q430732,https://nl.wikipedia.org/wiki/Station_Zoetermeer
+462,ztmv,zoeterm. voorweg,52.047500,4.477500,station,Q430732,https://nl.wikipedia.org/wiki/Station_Zoetermeer
+467,zwisch,bad zwischenahn (d),53.183611,8.009722,station,Q504526,https://de.wikipedia.org/wiki/Bad_Zwischenahn
+468,zww,zwaagwesteinde,53.248333,6.035833,station,Q2652530,https://nl.wikipedia.org/wiki/Station_De_Westereen
