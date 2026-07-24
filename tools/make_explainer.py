@@ -67,9 +67,9 @@ SPECIMENS = [
         "kicker": "section A · 0x00A24",
         "lead": "Arnhem’s board for trains toward Zevenaar. This one entry "
                 "is the whole format in miniature: an 8-byte header, a "
-                "length-prefixed body listing the stations on the line, then "
-                "one triple per departure — time, day-pattern, train "
-                "number. Cracking this record is what unlocked the timetable.",
+                "length-prefixed reference block, then one triple per "
+                "departure — time, day-pattern, train number. Cracking this "
+                "record is what unlocked the timetable.",
         "base": 0x00A24,
         "bytes": sl(0x00A24, 32),
         "fields": [
@@ -84,11 +84,15 @@ SPECIMENS = [
              "hdr[3]: nominal running time the other way."],
             [8, 2, "len", "body length", "11 words",
              "The body’s length in 16-bit words, counting this word."],
-            [10, 2, "len", "id-block length", "4",
-             "A length-prefixed list of the intermediate stations on the "
-             "segment follows."],
-            [12, 6, "index", "segment stations", "156, 157, 158",
-             "Station indices along the Arnhem–Zevenaar line, in order."],
+            [10, 2, "len", "reference-block length", "4",
+             "A length-prefixed block of node references for this line "
+             "follows (counting this word)."],
+            [12, 6, "pointer", "line node refs", "156, 157, 158",
+             "References into the internal node list (values 0–474: the 469 "
+             "stations plus 6 virtual endpoints). This is NOT the public "
+             "station index — reading them as station names gives nonsense "
+             "(they’d point at Zoetermeer for an Aachen line), so their exact "
+             "role is unconfirmed; the timetable decode does not need them."],
             [18, 2, "len", "group id", "1",
              "Departures are grouped by the stopping pattern they follow; this "
              "is group 1."],
@@ -579,8 +583,8 @@ function decodeField(i){
     case 'u16w':   return `${rd16(s)} words`;
     case 'term':{ const v=rd16(s);
       return v===0xffff?'0xFFFF · last entry':v===0xfffe?'0xFFFE · more follows':`0x${hx(v,4)}`; }
-    case 'stalist':{ const a=[]; for(let o=s;o+1<s+len;o+=2) a.push(nm(rd16(o)));
-      return a.join(' · ')||'(none)'; }
+    case 'noderef':{ const a=[]; for(let o=s;o+1<s+len;o+=2) a.push(rd16(o));
+      return a.join(', ')+' · internal node ids (0–474; not the public station index)'; }
     case 'words':{ const a=[]; for(let o=s;o+1<s+len;o+=2) a.push(rd16(o));
       return a.slice(0,10).join(', ')+(a.length>10?` … (${a.length} words)`:''); }
     case 'pair':{ const a=rd16(s), b=rd16(s+2);

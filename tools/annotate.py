@@ -94,7 +94,7 @@ class Annotator:
         t_rtb = self.T("time", "runtime ←", "rt11")
         t_blen = self.T("len", "body length", "u16w")
         t_ilen = self.T("len", "id-block length", "u16")
-        t_ids = self.T("index", "segment stations", "stalist")
+        t_ids = self.T("pointer", "line node refs", "noderef")
         t_grp = self.T("len", "group id", "u16")
         t_grt = self.T("time", "segment runtime", "rt11")
         t_slen = self.T("len", "departure-list length", "u16")

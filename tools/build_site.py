@@ -1,4 +1,104 @@
-<!DOCTYPE html>
+"""Build the GitHub Pages site under docs/.
+
+  * regenerates the byte explainer (docs/format_explainer.html) via make_explainer
+  * zips the generated GTFS feed into docs/gtfs/reisplanner-90-91.gtfs.zip
+  * writes docs/index.html, a landing page linking to both, with live stats
+
+Run extract_reisplanner.py first so output/90-91/gtfs exists.
+
+    python3 tools/build_site.py
+"""
+import csv
+import datetime
+import os
+import zipfile
+
+import make_explainer  # noqa: F401  (importing regenerates the explainer)
+
+REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+GTFS_SRC = os.path.join(REPO, "output", "90-91", "gtfs")
+DOCS = os.path.join(REPO, "docs")
+GTFS_OUT_DIR = os.path.join(DOCS, "gtfs")
+ZIP_NAME = "reisplanner-90-91.gtfs.zip"
+ZIP_PATH = os.path.join(GTFS_OUT_DIR, ZIP_NAME)
+
+GTFS_FILES = ["agency.txt", "stops.txt", "routes.txt", "trips.txt",
+              "stop_times.txt", "calendar.txt", "calendar_dates.txt",
+              "transfers.txt", "fare_attributes.txt"]
+
+
+def rows(name):
+    with open(os.path.join(GTFS_SRC, name)) as f:
+        return sum(1 for _ in f) - 1            # minus header
+
+
+def date_span():
+    starts, ends = [], []
+    with open(os.path.join(GTFS_SRC, "calendar.txt")) as f:
+        for r in csv.DictReader(f):
+            starts.append(r["start_date"])
+            ends.append(r["end_date"])
+    fmt = lambda s: datetime.datetime.strptime(s, "%Y%m%d").strftime("%-d %b %Y")
+    return fmt(min(starts)), fmt(max(ends))
+
+
+def build_zip():
+    os.makedirs(GTFS_OUT_DIR, exist_ok=True)
+    with zipfile.ZipFile(ZIP_PATH, "w", zipfile.ZIP_DEFLATED) as z:
+        for name in GTFS_FILES:
+            src = os.path.join(GTFS_SRC, name)
+            if os.path.exists(src):
+                z.write(src, name)
+    return os.path.getsize(ZIP_PATH)
+
+
+def human(n):
+    return f"{n/1024/1024:.1f} MB" if n >= 1 << 20 else f"{n/1024:.0f} KB"
+
+
+def main():
+    if not os.path.isdir(GTFS_SRC):
+        raise SystemExit("output/90-91/gtfs not found — run extract_reisplanner.py first")
+    zbytes = build_zip()
+    d0, d1 = date_span()
+    stats = {
+        "stops": rows("stops.txt"), "routes": rows("routes.txt"),
+        "trips": rows("trips.txt"), "stop_times": rows("stop_times.txt"),
+        "services": rows("calendar.txt"), "transfers": rows("transfers.txt"),
+    }
+
+    cards = f"""
+    <a class="card" href="format_explainer.html">
+      <div class="ic">⬡</div>
+      <h2>Explore the binary</h2>
+      <p>An interactive hexdump of <code>INLEES.NET</code> — every one of its
+      251,820 bytes classified into 130,895 typed fields, decoded on hover.</p>
+      <span class="go">Open the byte explainer →</span>
+    </a>
+    <a class="card" href="gtfs/{ZIP_NAME}" download>
+      <div class="ic">↓</div>
+      <h2>Download the timetable</h2>
+      <p>The recovered schedule as a standard <strong>GTFS</strong> feed —
+      the whole 1990/91 service, ready for any transit tool. {human(zbytes)} zipped.</p>
+      <span class="go">{ZIP_NAME} →</span>
+    </a>"""
+
+    statrow = "".join(
+        f'<div><b>{v:,}</b><span>{k.replace("_"," ")}</span></div>'
+        for k, v in stats.items())
+
+    html = INDEX.replace("__CARDS__", cards).replace("__STATS__", statrow) \
+                .replace("__D0__", d0).replace("__D1__", d1)
+    with open(os.path.join(DOCS, "index.html"), "w") as f:
+        f.write(html)
+
+    print(f"GTFS zip  : docs/gtfs/{ZIP_NAME}  ({human(zbytes)})")
+    print(f"stats     : {stats}  · {d0} – {d1}")
+    print("index     : docs/index.html")
+    print("explainer : docs/format_explainer.html (regenerated)")
+
+
+INDEX = """<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -62,25 +162,11 @@ footer a{color:var(--accent);text-decoration:none}
   <h1>NS Reisplanner 90/91</h1>
   <p class="lede">The complete 1990 Dutch Railways timetable, reverse-engineered
   out of the DOS trip planner’s compiled binary and re-emitted as open data.</p>
-  <p class="span">Timetable validity 27 May 1990 – 1 Jun 1991 · © CVI, Utrecht 1990</p>
+  <p class="span">Timetable validity __D0__ – __D1__ · © CVI, Utrecht 1990</p>
 
-  <div class="cards">
-    <a class="card" href="format_explainer.html">
-      <div class="ic">⬡</div>
-      <h2>Explore the binary</h2>
-      <p>An interactive hexdump of <code>INLEES.NET</code> — every one of its
-      251,820 bytes classified into 130,895 typed fields, decoded on hover.</p>
-      <span class="go">Open the byte explainer →</span>
-    </a>
-    <a class="card" href="gtfs/reisplanner-90-91.gtfs.zip" download>
-      <div class="ic">↓</div>
-      <h2>Download the timetable</h2>
-      <p>The recovered schedule as a standard <strong>GTFS</strong> feed —
-      the whole 1990/91 service, ready for any transit tool. 444 KB zipped.</p>
-      <span class="go">reisplanner-90-91.gtfs.zip →</span>
-    </a></div>
+  <div class="cards">__CARDS__</div>
 
-  <div class="stats"><div><b>469</b><span>stops</span></div><div><b>971</b><span>routes</span></div><div><b>6,729</b><span>trips</span></div><div><b>52,613</b><span>stop times</span></div><div><b>134</b><span>services</span></div><div><b>2,039</b><span>transfers</span></div></div>
+  <div class="stats">__STATS__</div>
 
   <p class="note">The GTFS feed is generated from <code>INLEES.NET</code> by
   <code>extract_reisplanner.py</code> and validated stop-by-stop against the
@@ -96,3 +182,8 @@ footer a{color:var(--accent);text-decoration:none}
 </div>
 </body>
 </html>
+"""
+
+
+if __name__ == "__main__":
+    main()
