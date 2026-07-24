@@ -44,17 +44,24 @@ Regenerates everything under `output/<edition>/` from `input/<edition>/INLEES.NE
 | `network_segments.csv` | topology — **249 line segments**, 468/469 stations placed | ✅ |
 | `holidays.csv` | the 15 holiday/shift dates (names annotated — see note) | ✅ |
 | `footnotes.csv` | all 85 footnotes with exact running-date ranges | ✅ |
-| `fares.csv` | 36-band distance→fare table (season tickets derived, not stored) | ✅ |
+| `trips.csv` | one row per journey: origin/destination + exact running dates | ✅ |
+| `fares.csv` | 36-band distance→fare table (enkele reis / retour, 2e+1e, normal+reduced) | ✅ |
+| `season_tickets.csv` | 13-band week-/maand-/jeugdmaandtrajectkaart prices (stored, not derived) | ✅ |
+| `transfers.csv` | 1,418 minimum transfer times between train pairs at 49 junctions | ✅ |
 | `connection_events.csv` | all 21,126 departure/arrival events (time, days, footnote, ref) | ✅ **unlabelled** |
-| `gtfs/` | GTFS feed: 469 stops, calendar + calendar_dates (holidays), fares, sample trips | ✅ |
+| `timetable.csv` | the **full decoded timetable** — 6,729 journeys (incl. 223 ferry + 257 bus), 52,613 stops | ✅ |
+| `gtfs/` | GTFS feed: 469 stops, 971 routes, 6,729 trips, 52,613 stop_times, calendar + footnote exceptions, fares | ✅ |
 
 *The reverse-engineered section offsets in `extract_reisplanner.py` are for the 90-91 edition;
 another edition may need them re-derived (see `docs/FORMAT.md`).*
 
-**The one remaining gap:** attaching a *station* to each departure event (labelled per-station
-boards / full trips). The timetable is a compiled **route-graph** — departures are *computed*
-by graph traversal, not stored as flat per-station lists — so this needs the search engine
-reimplemented (or dumped under a debugger). See **`docs/PLAN.md`**.
+**The timetable is fully decoded.** The last gap — attaching a *station* to each departure —
+was closed by disassembling the search engine's node walker (`0x6ae6`) and body parser
+(`0x6889`); `tools/decode_timetable.py` reads the records directly, no traversal needed.
+Validated two ways: the golden trip `fixtures/train_8917_sun.csv` reproduces 8/8 stops, and
+`tools/verify_query.py` runs real queries inside the emulator while `tools/compare_screen.py`
+checks the answers — **45/45 connections across eleven queries on six dates**, times and exact
+running dates (footnotes included), across train, ferry and bus legs. See **`docs/BINARY.md`**.
 
 ## Source & provenance
 - The 1990 software (in `input/90-91/`) is © CVI N.V. / N.V. Nederlandse Spoorwegen, from the

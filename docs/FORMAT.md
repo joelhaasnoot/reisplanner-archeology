@@ -10,6 +10,9 @@ The archive holds three files:
 | `REISPLAN.EXE` | the DOS program (93 KB, unpacked Turbo-C) |
 | `INLEES.NET` | the schedule database — "inlees" = *read-in* (252 KB). All data lives here. |
 | `NL_90_91.VKZ` | 24-byte pointer/config record (references "tilburg west"), not yet decoded |
+| section D | 8-byte footnote records `(next, first_day, last_day)`, indexed from `0x3cc76` |
+| `0x3d5cc` / `0x3d6c8` | season-ticket price tables (13 km bands + catch-all) |
+| section B | per-junction minimum transfer times `(train_a, train_b, minutes)` |
 
 The file layout below was recovered authoritatively by reverse-engineering the EXE's
 **load routine** (it reads a header of section sizes, then reads each section into its own
@@ -58,11 +61,13 @@ Three u32 pointer fields per record:
 
 Small u16 count fields sit at `+2` and `+12`.
 
-⚠️ **`+22` points to a per-station *header*** (a small block with platform-adjacency
-data, ending in `ff ff`), **not directly to the departure board.** For some stations the
-board nodes sit right after the header; for ~half they do not (211/469 headers have no
-adjacent nodes). The **header → departure-board link is still open**, so board nodes
-cannot yet be attributed to stations network-wide (see "Still open").
+**`+22` points to the station's node record** in section A: a list of entries, one per line
+segment the station sits on, each an 8-byte header + a length-prefixed body + a `0xfffe`/
+`0xffff` terminator. Entries with `hdr[1] == 0` are departure boards; the rest give the
+station's arrival offsets along a segment. That is the whole timetable — see `BINARY.md`
+for the field layout and `tools/decode_timetable.py` for the parser. (The earlier reading of
+`+22` as a "platform-adjacency header" with no board link was wrong: it mistook one entry of
+a multi-entry record for the whole thing.)
 
 → Extracted to `output/90-91/stations.csv` (idx, code, name, board offset).
 

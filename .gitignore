@@ -7,6 +7,18 @@
 # scratch / logs
 *.log
 scratchpad/
+__pycache__/
+
+# publish-only body fragment for the format explainer (rebuilt by
+# tools/make_explainer.py; the standalone docs/format_explainer.html is tracked)
+/docs/format_explainer.frag.html
 
 # generated outputs — regenerate with: python3 extract_reisplanner.py
 /output/
+
+# locally built debug-enabled DOSBox-X (20 MB) — see docs/PLAN.md for the build recipe
+/tools/dosbox-x
+
+# emulator working dir + debugger memory dumps
+/work/
+MEMDUMP.BIN

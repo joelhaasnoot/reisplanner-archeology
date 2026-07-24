@@ -8,25 +8,30 @@ GTFS feed reconstructed from `INLEES.NET` (NS Reisplanner, timetable valid
 | file | coverage | notes |
 |------|----------|-------|
 | `agency.txt` | ✅ complete | NS |
-| `stops.txt` | ✅ all 455 stations | `stop_lat`/`stop_lon` empty — see below |
-| `calendar.txt` | ✅ 16 day-mask patterns + `su` | bit0=Mon … bit6=Sun; `m7f`=daily, `m1f`=weekdays, `m3f`=Mon–Sat; `su`=Sunday-observed |
-| `routes.txt` | 6 routes | 1 branch + 5 mainline corridors |
-| `trips.txt` | 62 trips | see two methods below |
-| `stop_times.txt` | for those trips | |
+| `stops.txt` | ✅ all 469 stations | `stop_lat`/`stop_lon` empty — see below |
+| `calendar.txt` | ✅ 114 services | one per distinct running-day set; day masks use bit0=Mon … bit6=Sun |
+| `routes.txt` | ✅ 937 routes | one per origin/destination pair |
+| `trips.txt` | ✅ 6,249 trips | whole network; `trip_short_name` = the 1990 train number |
+| `stop_times.txt` | ✅ 51,653 stop_times | arrival/departure per stop, dwell included |
 
-## Two reconstruction methods
-1. **Binary-reconstructed** (Leeuwarden–Stavoren, 29 trips, service from real day-masks):
-   full intermediate stops chained out of `INLEES.NET`, verified to the minute vs the
-   emulator. Works cleanly on sparse lines with near-unique times.
-2. **Query-harvested** (5 corridors, 33 trips, service `su`): read directly off the
-   DOSBox result screens, which self-label origin/destination/time/train#. Endpoint stops
-   only (intermediate stops for these fast trains not yet filled). Through-trains merged
-   (825, 927 = Amsterdam→Utrecht→Eindhoven; 525 = Amersfoort→Zwolle→Groningen).
-   Corridors: Amsterdam–Eindhoven, Amsterdam–Den Haag (via Leiden), Den Haag–Rotterdam,
-   Amersfoort–Groningen, Arnhem–Nijmegen.
+## How the trips are built
+Straight out of `INLEES.NET` by `tools/decode_timetable.py` — the section-A node records
+give each segment's departure board and each intermediate station's arrival offsets, and
+per-segment runs are chained into whole journeys by train number. Nothing is hand-entered
+and nothing is harvested off the emulator's screen any more; both of those were stopgaps
+while the record format was unknown.
 
-   *Caveat:* `su` marks these Sunday-only because that's the day queried (27 May 1990);
-   their true weekly validity would come from the binary day-masks.
+Each service is a journey's exact 371-day running set — the weekly day mask narrowed by the
+footnote's dates and intersected along the chain. The weekly pattern goes in `calendar.txt`
+and the footnote's excluded days become `calendar_dates.txt` removals, so a train that skips
+Christmas Eve is represented correctly rather than as "daily".
+
+Journeys that run past midnight keep counting (`24:11`), per GTFS convention.
+
+## Transfers
+`transfers.txt` comes from section B: per-junction minimum transfer times between specific
+train pairs (`transfer_type=2`, `min_transfer_time` in seconds). The binary's default is
+2 minutes and only the exceptions are stored — 1 minute, or 0 for same-platform pairs.
 
 ## Coordinates
 `stop_lat`/`stop_lon` are intentionally empty. The `stop_code` values are the **official
