@@ -9,9 +9,12 @@
 scratchpad/
 __pycache__/
 
-# publish-only body fragment for the format explainer (rebuilt by
-# tools/make_explainer.py; the standalone docs/format_explainer.html is tracked)
+# generated site — built by tools/build_site.py and deployed by the Pages
+# workflow (.github/workflows/pages.yml); never committed.
+/docs/format_explainer.html
 /docs/format_explainer.frag.html
+/docs/index.html
+/docs/gtfs/
 
 # generated outputs — regenerate with: python3 extract_reisplanner.py
 /output/

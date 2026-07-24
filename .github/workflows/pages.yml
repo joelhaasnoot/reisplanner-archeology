@@ -1,0 +1,52 @@
+name: Build & deploy site
+
+# Rebuilds the byte explainer and the GTFS feed from the tracked source binary
+# (input/90-91/INLEES.NET) on every push to main, and deploys docs/ to GitHub
+# Pages. The generated files are NOT committed — this workflow produces them.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "input/**"
+      - "extract_reisplanner.py"
+      - "tools/**"
+      - ".github/workflows/pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Decode timetable + GTFS from INLEES.NET
+        run: python3 extract_reisplanner.py
+      - name: Build site (byte explainer + GTFS zip + landing page)
+        run: python3 tools/build_site.py
+      - name: Drop the publish-only fragment from the deploy
+        run: rm -f docs/format_explainer.frag.html
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
