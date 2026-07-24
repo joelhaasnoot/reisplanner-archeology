@@ -1,9 +1,15 @@
 """Generate an interactive annotated-hexdump explainer for INLEES.NET.
 
-Reads the real bytes out of the archival file at fixed offsets and emits a
-single self-contained HTML page: a file map plus a series of "specimen"
-hexdumps whose bytes are colour-coded by field and explained on hover. Every
-byte shown is pulled from the file, so the page cannot drift from the source.
+Emits a single self-contained HTML page (docs/format_explainer.html):
+
+  * the WHOLE file as a virtualized hexdump, every byte coloured by the field
+    it belongs to. Field boundaries + type codes come from tools/annotate.py;
+    the human label and decoded value are computed in JavaScript on hover, so
+    the page ships boundaries, not a string per byte.
+  * a region-map navigator and five hand-written "specimen" deep-dives.
+
+Both the raw bytes and the annotations are derived from the archival file at
+build time, so the page cannot drift from the source.
 
     python3 tools/make_explainer.py            # -> docs/format_explainer.html
 """
@@ -227,21 +233,50 @@ LEGEND = [
     ("marker", "marker / zero"),
 ]
 
-# region kinds -> a palette colour. These colour the whole-file hexdump.
+
+# ── whole-file byte annotation (every byte -> a typed field) ─────────────────
+import annotate
+
+stations_full = annotate.load_stations()
+TYPES, FIELDS = annotate.build(d, stations_full)
+
+# region kinds -> a palette colour, for the map navigator.
 REGION_CAT = {"meta": "marker", "graph": "time", "transfer": "len",
               "text": "text", "cal": "foot", "fare": "price", "value": "value"}
-KINDS = ["meta", "graph", "transfer", "text", "cal", "fare", "value"]
+
+
+def pack_fields(fields):
+    """varint(length) + 1 byte type, per field, in file order."""
+    out = bytearray()
+    for _start, length, t in fields:
+        v = length
+        while v >= 0x80:
+            out.append((v & 0x7F) | 0x80)
+            v >>= 7
+        out.append(v)
+        out.append(t)
+    return base64.b64encode(bytes(out)).decode()
+
+
+FIELDS_B64 = pack_fields(FIELDS)
+maxidx = max(stations_full)
+NAMES = [stations_full[i]["name"] if i in stations_full else "" for i in range(maxidx + 1)]
 
 payload = {
     "regions": [{"start": s, "end": e, "name": n, "cat": REGION_CAT[k],
                  "note": note, "kind": k} for (s, e, n, k, note) in REGIONS],
     "specimens": SPECIMENS,
-    "legend": LEGEND,
-    "kinds": {k: REGION_CAT[k] for k in KINDS},
+    "types": TYPES,
+    "names": NAMES,
+    "modes": {3: "boot", 4: "bus", 7: "lopen", 8: "link"},
+    "off": {"STATTBL": annotate.STATTBL, "DATECAL": annotate.DATECAL,
+            "SECD": annotate.SECD, "FNIDX": annotate.FNIDX},
+    "start": "1990-05-27",
+    "nfields": len(FIELDS),
     "filesize": FILESIZE,
 }
 
-DATA = json.dumps(payload)
+DATA = json.dumps(payload, separators=(",", ":"))
 B64 = base64.b64encode(d).decode()
 
 # The body-only fragment (style + markup + script). This is what the Artifact
@@ -256,7 +291,7 @@ FRAG = """<style>
   --cat-time:#5bbf63; --cat-mask:#e6a94a; --cat-foot:#ee7f4d;
   --cat-train:#e07cc4; --cat-text:#46c4d1; --cat-price:#e56f88;
   --cat-value:#c9b53f; --cat-marker:#8b97a8;
-  --tint:16%; --tint-hi:42%; --edge:64%;
+  --tint:16%; --tint-hi:44%; --edge:64%;
   --mono:ui-monospace,"SF Mono","JetBrains Mono","Cascadia Code",Menlo,Consolas,monospace;
   --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
 }
@@ -268,7 +303,7 @@ FRAG = """<style>
   --cat-time:#2f9440; --cat-mask:#b5791a; --cat-foot:#c65a26;
   --cat-train:#c0479e; --cat-text:#0e8b98; --cat-price:#c53f5f;
   --cat-value:#8f7e14; --cat-marker:#5a6675;
-  --tint:20%; --tint-hi:52%; --edge:78%;
+  --tint:22%; --tint-hi:55%; --edge:78%;
 }}
 :root[data-theme=light]{
   --bg:#eef0ee; --panel:#f8f9f7; --panel2:#ffffff; --line:#d9ddd6;
@@ -278,12 +313,12 @@ FRAG = """<style>
   --cat-time:#2f9440; --cat-mask:#b5791a; --cat-foot:#c65a26;
   --cat-train:#c0479e; --cat-text:#0e8b98; --cat-price:#c53f5f;
   --cat-value:#8f7e14; --cat-marker:#5a6675;
-  --tint:20%; --tint-hi:52%; --edge:78%;
+  --tint:22%; --tint-hi:55%; --edge:78%;
 }
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);
   line-height:1.6;-webkit-font-smoothing:antialiased}
-.wrap{max-width:960px;margin:0 auto;padding:0 20px}
+.wrap{max-width:1000px;margin:0 auto;padding:0 20px}
 a{color:var(--accent);text-decoration:none}
 a:hover{text-decoration:underline}
 
@@ -299,7 +334,7 @@ header.hero::after{content:"";position:absolute;inset:0;pointer-events:none;
 h1{font-family:var(--mono);font-weight:700;font-size:clamp(30px,6vw,50px);
   letter-spacing:-.01em;margin:0;text-wrap:balance;line-height:1.05}
 h1 .dim{color:var(--ink3)}
-.tagline{max-width:60ch;color:var(--ink2);font-size:17px;margin:18px 0 0}
+.tagline{max-width:62ch;color:var(--ink2);font-size:17px;margin:18px 0 0}
 .meta{font-family:var(--mono);font-size:12.5px;color:var(--ink3);margin-top:22px;
   display:flex;gap:22px;flex-wrap:wrap}
 .meta b{color:var(--ink2);font-weight:600}
@@ -308,7 +343,7 @@ section{padding:44px 0;border-bottom:1px solid var(--line)}
 .h{font-family:var(--mono);font-size:12px;letter-spacing:.2em;
   text-transform:uppercase;color:var(--ink3);margin:0 0 8px}
 h2{font-size:24px;margin:0 0 6px;letter-spacing:-.01em;text-wrap:balance}
-.sub{color:var(--ink2);max-width:66ch;margin:0 0 22px}
+.sub{color:var(--ink2);max-width:68ch;margin:0 0 22px}
 
 /* file map / navigator */
 .map{display:flex;height:56px;border-radius:9px;overflow:hidden;
@@ -322,11 +357,12 @@ h2{font-size:24px;margin:0 0 6px;letter-spacing:-.01em;text-wrap:balance}
 .seg.on{outline:2px solid var(--accent);outline-offset:-2px;z-index:2}
 .maprow{display:flex;justify-content:space-between;font-family:var(--mono);
   font-size:11px;color:var(--ink3);margin-top:8px}
-.reglegend{display:flex;flex-wrap:wrap;gap:7px 14px;margin:0 0 14px;
+.legend{display:flex;flex-wrap:wrap;gap:7px 14px;margin:0 0 14px;
   font-family:var(--mono);font-size:12px}
-.reglegend span{display:inline-flex;align-items:center;gap:7px;color:var(--ink2)}
-.reglegend i{width:11px;height:11px;border-radius:3px;
-  background:color-mix(in srgb,var(--c) 62%,transparent)}
+.legend span{display:inline-flex;align-items:center;gap:7px;color:var(--ink2);
+  cursor:default}
+.legend i{width:11px;height:11px;border-radius:3px;
+  background:color-mix(in srgb,var(--c) 66%,transparent)}
 
 /* whole-file hex viewer */
 .viewer{margin-top:18px;border:1px solid var(--line);border-radius:12px;
@@ -341,51 +377,53 @@ h2{font-size:24px;margin:0 0 6px;letter-spacing:-.01em;text-wrap:balance}
 .hv-hex{flex:none}
 .hb{display:inline-block;width:1.75em;text-align:center;color:var(--ink);
   border-radius:3px;
-  background:color-mix(in srgb,var(--c) var(--tint),transparent)}
+  background:color-mix(in srgb,var(--c,var(--cat-marker)) var(--tint),transparent)}
 .hb.gap{margin-left:.65em}
-.hb.k-meta{--c:var(--cat-marker)} .hb.k-graph{--c:var(--cat-time)}
-.hb.k-transfer{--c:var(--cat-len)} .hb.k-text{--c:var(--cat-text)}
-.hb.k-cal{--c:var(--cat-foot)} .hb.k-fare{--c:var(--cat-price)}
-.hb.k-value{--c:var(--cat-value)}
-.hb.anno{box-shadow:inset 0 0 0 1.3px color-mix(in srgb,var(--c) 85%,transparent)}
-.hb.pad{background:none}
+.hb.fst{box-shadow:inset 1.4px 0 0 color-mix(in srgb,var(--c) 60%,transparent)}
+.hb.c-pointer{--c:var(--cat-pointer)} .hb.c-index{--c:var(--cat-index)}
+.hb.c-len{--c:var(--cat-len)} .hb.c-time{--c:var(--cat-time)}
+.hb.c-mask{--c:var(--cat-mask)} .hb.c-foot{--c:var(--cat-foot)}
+.hb.c-train{--c:var(--cat-train)} .hb.c-text{--c:var(--cat-text)}
+.hb.c-price{--c:var(--cat-price)} .hb.c-value{--c:var(--cat-value)}
+.hb.c-marker{--c:var(--cat-marker)}
+.hb.pad{background:none;color:var(--ink3)}
 .hb.on{background:color-mix(in srgb,var(--c) var(--tint-hi),transparent);
   outline:1.4px solid var(--c)}
 .hv-asc{flex:none;padding:0 14px 0 18px;color:var(--ink3);
   border-left:1px solid var(--line);margin-left:12px}
-.hv-asc .np{color:var(--ink3);opacity:.5}
+.hv-asc [data-o]{border-radius:2px}
 .hv-asc b{color:var(--ink);font-weight:400}
-.hv-scroll{height:62vh;min-height:360px;overflow:auto;
+.hv-asc .np{color:var(--ink3);opacity:.5}
+.hv-asc .on{background:color-mix(in srgb,var(--c,var(--cat-text)) var(--tint-hi),transparent);
+  color:var(--ink)}
+.hv-scroll{height:64vh;min-height:380px;overflow:auto;
   position:relative;background:var(--panel)}
 .hv-sizer{position:relative}
 .hv-rows{position:absolute;left:0;top:0;width:max-content}
 .hv-row:hover{background:color-mix(in srgb,var(--accent) 5%,transparent)}
-.hcols{color:var(--ink3)}
-/* status bar */
 .status{font-family:var(--mono);font-size:12.5px;border-top:1px solid var(--line);
-  background:var(--panel2);padding:10px 14px;display:flex;gap:8px 16px;
-  flex-wrap:wrap;align-items:center;min-height:44px}
+  background:var(--panel2);padding:10px 14px;display:flex;gap:8px 14px;
+  flex-wrap:wrap;align-items:center;min-height:46px}
 .status .pill{padding:1px 9px;border-radius:20px;
-  background:color-mix(in srgb,var(--c,var(--ink3)) 22%,transparent);
-  color:var(--ink)}
+  background:color-mix(in srgb,var(--c,var(--ink3)) 24%,transparent);color:var(--ink)}
 .status .o{color:var(--accent);font-weight:600}
 .status .muted{color:var(--ink3)}
 .status .fld{color:var(--ink);font-weight:600}
+.status .val{color:var(--ink)}
 .status .hint{color:var(--ink3)}
 
-/* specimen legend + cards */
-.legend{display:flex;flex-wrap:wrap;gap:8px 16px;margin:0 0 4px;
+/* specimen cards */
+.leg2{display:flex;flex-wrap:wrap;gap:8px 16px;margin:0 0 4px;
   font-family:var(--mono);font-size:12px}
-.legend span{display:inline-flex;align-items:center;gap:7px;color:var(--ink2)}
-.legend i{width:11px;height:11px;border-radius:3px;background:var(--c)}
+.leg2 span{display:inline-flex;align-items:center;gap:7px;color:var(--ink2)}
+.leg2 i{width:11px;height:11px;border-radius:3px;background:var(--c)}
 .spec{background:var(--panel);border:1px solid var(--line);border-radius:12px;
   padding:22px;margin-top:20px}
 .spec-head{display:flex;justify-content:space-between;align-items:baseline;
   gap:16px;flex-wrap:wrap;margin-bottom:6px}
 .spec-head h3{margin:0;font-size:19px}
-.kick{font-family:var(--mono);font-size:12px;color:var(--accent);
-  letter-spacing:.04em}
-.lead{color:var(--ink2);font-size:14.5px;margin:0 0 14px;max-width:72ch}
+.kick{font-family:var(--mono);font-size:12px;color:var(--accent);letter-spacing:.04em}
+.lead{color:var(--ink2);font-size:14.5px;margin:0 0 14px;max-width:74ch}
 .jump{font-family:var(--mono);font-size:12px;background:none;cursor:pointer;
   color:var(--accent);border:1px solid color-mix(in srgb,var(--accent) 40%,transparent);
   border-radius:6px;padding:3px 10px;margin:0 0 16px}
@@ -414,15 +452,13 @@ h2{font-size:24px;margin:0 0 6px;letter-spacing:-.01em;text-wrap:balance}
   outline:1px solid var(--cat-text);color:var(--ink)}
 .detail{margin-top:16px;background:var(--panel2);border:1px solid var(--line);
   border-left:3px solid var(--c,var(--line));border-radius:8px;padding:13px 15px;
-  min-height:78px;transition:border-color .12s}
+  min-height:78px}
 .detail .hint{color:var(--ink3);font-size:14px}
-.detail .drow{display:flex;gap:12px;align-items:baseline;flex-wrap:wrap;
-  margin-bottom:5px}
+.detail .drow{display:flex;gap:12px;align-items:baseline;flex-wrap:wrap;margin-bottom:5px}
 .detail .lbl{font-family:var(--sans);font-weight:650;font-size:15px}
 .detail .rng{font-family:var(--mono);font-size:11.5px;color:var(--ink3)}
 .detail .val{font-family:var(--mono);font-size:13px;color:var(--ink);
-  background:color-mix(in srgb,var(--c) 18%,transparent);
-  padding:1px 8px;border-radius:5px}
+  background:color-mix(in srgb,var(--c) 18%,transparent);padding:1px 8px;border-radius:5px}
 .detail .note{color:var(--ink2);font-size:14px;margin:0}
 footer{padding:34px 0 60px;color:var(--ink3);font-size:13px;font-family:var(--mono)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
@@ -430,13 +466,14 @@ footer{padding:34px 0 60px;color:var(--ink3);font-size:13px;font-family:var(--mo
 
 <header class="hero"><div class="wrap">
   <p class="eyebrow">Reverse-engineering field guide</p>
-  <h1>INLEES.NET<span class="dim"> · an annotated hexdump</span></h1>
+  <h1>INLEES.NET<span class="dim"> · every byte annotated</span></h1>
   <p class="tagline">The complete 1990 NS Reisplanner timetable compiled into
-  one 246&nbsp;KB binary — shown here in full. Every byte is read live from
-  the archival file and coloured by the region it belongs to. Hover to read it.</p>
+  one 246&nbsp;KB binary. All __SIZE__ bytes are shown below, and every one is
+  tagged with the field it belongs to — __NFIELDS__ fields in total, decoded
+  live from the file. Hover any byte to read it.</p>
   <div class="meta">
     <span><b>__SIZE__</b> bytes</span>
-    <span><b>12</b> regions</span>
+    <span><b>__NFIELDS__</b> fields</span>
     <span><b>469</b> stations</span>
     <span><b>6,729</b> trips</span>
   </div>
@@ -444,18 +481,18 @@ footer{padding:34px 0 60px;color:var(--ink3);font-size:13px;font-family:var(--mo
 
 <section id="whole"><div class="wrap">
   <p class="h">The entire file</p>
-  <h2>All __SIZE__ bytes</h2>
-  <p class="sub">Scroll the dump; each byte is tinted by its region. Section A —
-  the connection graph — is four fifths of it. Bytes that are ringed have a
-  field-level explanation: hover them, or open one of the annotated specimens
-  below. Click a band or a legend entry to jump.</p>
-  <div class="reglegend" id="reglegend"></div>
+  <h2>All __SIZE__ bytes, every one classified</h2>
+  <p class="sub">Each byte is coloured by what it is. Scroll the dump — the
+  repeating green/pink bands in section A are departure events (time · day-mask ·
+  footnote · train number). Hover a byte for its field and decoded value; click a
+  region band or legend swatch to jump.</p>
+  <div class="legend" id="legend"></div>
   <div class="map" id="mapbar"></div>
   <div class="maprow"><span>0x00000</span><span>0x__ENDHEX__</span></div>
   <div class="viewer">
     <div class="hv-scroll" id="hvscroll">
       <div class="hv-head"><span class="hv-off">offset</span>
-        <span class="hv-hex hcols" id="colhdr"></span>
+        <span class="hv-hex" id="colhdr"></span>
         <span class="hv-asc">ascii</span></div>
       <div class="hv-sizer" id="hvsizer">
         <div class="hv-rows" id="hvrows"></div>
@@ -468,84 +505,129 @@ footer{padding:34px 0 60px;color:var(--ink3);font-size:13px;font-family:var(--mo
 </div></section>
 
 <section id="specs"><div class="wrap">
-  <p class="h">The structures, byte by byte</p>
+  <p class="h">The structures, in prose</p>
   <h2>Five annotated specimens</h2>
-  <p class="sub">Curated slices of the file with every field explained. Colour
-  marks the field; hover a byte to read it, or jump to it in the full dump above.</p>
-  <div class="legend" id="legend"></div>
+  <p class="sub">The same bytes, curated: five slices of the file with every
+  field explained. Jump to any of them in the full dump above.</p>
+  <div class="leg2" id="leg2"></div>
   <div id="specimens"></div>
 </div></section>
 
 <footer><div class="wrap">
   Generated from input/90-91/INLEES.NET · NS Reisplanner 90/91 ·
-  every value verified against the decoder and the running 1990 program.
+  byte annotations produced by the decoder, verified against the running 1990 program.
 </div></footer>
 
 <script>
 const DATA = __DATA__;
 const BYTES = Uint8Array.from(atob("__B64__"), c=>c.charCodeAt(0));
 const N = BYTES.length;
+const TYPES = DATA.types, NAMES = DATA.names, MODES = DATA.modes, OFF = DATA.off;
 const catVar = c => `var(--cat-${c})`;
 const hx = (v,n) => v.toString(16).toUpperCase().padStart(n,'0');
-
-/* per-byte region kind, precomputed once */
-const kindOf = new Uint8Array(N);
-const KINDLIST = Object.keys(DATA.kinds);
-DATA.regions.forEach(r=>{
-  const ki = KINDLIST.indexOf(r.kind);
-  for(let o=r.start; o<r.end && o<N; o++) kindOf[o]=ki;
-});
-function regionAt(o){
-  let lo=0, hi=DATA.regions.length-1;
-  while(lo<=hi){const m=(lo+hi)>>1, r=DATA.regions[m];
-    if(o<r.start) hi=m-1; else if(o>=r.end) lo=m+1; else return r;}
-  return DATA.regions[DATA.regions.length-1];
+const rd16 = o => BYTES[o] | (BYTES[o+1]<<8);
+const rd32 = o => (BYTES[o] | (BYTES[o+1]<<8) | (BYTES[o+2]<<16) | (BYTES[o+3]<<24))>>>0;
+const rds16 = o => { const v=rd16(o); return v>=0x8000 ? v-0x10000 : v; };
+const nm = i => (NAMES[i]||('#'+i));
+const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const BASEDAY = Date.UTC(1990,4,27);
+function dayDate(n){ const d=new Date(BASEDAY+n*86400000);
+  return `${d.getUTCDate()} ${MON[d.getUTCMonth()]} ${d.getUTCFullYear()}`; }
+function hhmm(m){ return `${String((m/60)|0).padStart(2,'0')}:${String(m%60).padStart(2,'0')}`; }
+function maskName(m){
+  const nice={0x7f:'daily',0x3f:'Mon–Sat',0x1f:'Mon–Fri',0x40:'Sun only',0x60:'weekend'};
+  if(nice[m]) return nice[m];
+  const L='MTWTFSS'; let s='';
+  for(let b=0;b<7;b++) s+= (m>>b)&1 ? L[b] : '·';
+  return s;
 }
 
-/* offset -> field annotation, from the specimen slices */
-const annoMap = {};
-DATA.specimens.forEach(s=>{
-  const add=(base,fields,tag)=>fields.forEach((f,fi)=>{
-    for(let k=f[0];k<f[0]+f[1];k++)
-      annoMap[base+k]={spec:s.id,tag,fi,cat:f[2],lbl:f[3],val:f[4],note:f[5]};
-  });
-  add(s.base, s.fields, 'main');
-  if(s.extra) add(s.extra.base, s.extra.fields, 'extra');
-});
+/* ---- unpack the field table: varint(len)+byte(type) ---- */
+const F = DATA.nfields;
+const fstart = new Uint32Array(F+1);
+const ftype = new Uint8Array(F);
+(function(){
+  const blob = Uint8Array.from(atob("__FIELDS__"), c=>c.charCodeAt(0));
+  let p=0, pos=0;
+  for(let i=0;i<F;i++){
+    let len=0, sh=0, b;
+    do{ b=blob[p++]; len|=(b&0x7f)<<sh; sh+=7; }while(b&0x80);
+    ftype[i]=blob[p++];
+    fstart[i]=pos; pos+=len;
+  }
+  fstart[F]=pos;
+})();
+/* per-byte -> field index, for O(1) hover + colour */
+const byteField = new Uint32Array(N);
+for(let i=0;i<F;i++){ for(let o=fstart[i];o<fstart[i+1];o++) byteField[o]=i; }
 
-/* ---- region legend + navigator map ---- */
-const rl = document.getElementById('reglegend');
-const seenKind = new Set();
-DATA.regions.forEach(r=>{
-  if(seenKind.has(r.kind)) return; seenKind.add(r.kind);
-  const label = {meta:'metadata / tables',graph:'A · connection graph',
-    transfer:'B · transfer times',text:'C · names',cal:'footnotes / calendar',
-    fare:'fares / tickets',value:'link corrections'}[r.kind]||r.kind;
-  const s=document.createElement('span');
-  s.style.setProperty('--c', catVar(r.cat));
-  s.innerHTML=`<i></i>${label}`;
-  s.style.cursor='pointer';
-  s.addEventListener('click',()=>jumpTo(r.start));
-  rl.appendChild(s);
-});
+/* ---- decode one field to a human value ---- */
+function decodeField(i){
+  const s=fstart[i], len=fstart[i+1]-s, t=ftype[i], dec=TYPES[t].dec;
+  switch(dec){
+    case 'sta':      return `${rd16(s)} → ${nm(rd16(s))}`;
+    case 'near':{ const v=rd16(s);
+      return v===0 ? '0 · board (this station is an endpoint)'
+        : MODES[v] ? `${v} · non-rail: ${MODES[v]}` : `${v} → ${nm(v)}`; }
+    case 'rt11':{ const v=rd16(s); return `${v&0x7ff} min`+(v>0x7ff?' (+flags)':''); }
+    case 'time11':{ const v=rd16(s); return `${hhmm(v&0x7ff)}`+(v>0x7ff?' (+flags)':''); }
+    case 'footb':{ const v=BYTES[s]; return v? `footnote ${v}` : 'none'; }
+    case 'maskb':{ const v=BYTES[s]; return `0x${hx(v,2)} · ${maskName(v)}`; }
+    case 'train':{ const v=rd16(s);
+      return `${v&0x7fff}`+(v>0x7fff?` (0x${hx(v,4)}, high bit set)`:''); }
+    case 'u16':    return `${rd16(s)}`;
+    case 'u16w':   return `${rd16(s)} words`;
+    case 'term':{ const v=rd16(s);
+      return v===0xffff?'0xFFFF · last entry':v===0xfffe?'0xFFFE · more follows':`0x${hx(v,4)}`; }
+    case 'stalist':{ const a=[]; for(let o=s;o+1<s+len;o+=2) a.push(nm(rd16(o)));
+      return a.join(' · ')||'(none)'; }
+    case 'words':{ const a=[]; for(let o=s;o+1<s+len;o+=2) a.push(rd16(o));
+      return a.slice(0,10).join(', ')+(a.length>10?` … (${a.length} words)`:''); }
+    case 'pair':{ const a=rd16(s), b=rd16(s+2);
+      return (a>>10)===(b>>10) ? `group ${a>>10}: +${a&0x3ff} / +${b&0x3ff} min`
+        : `0x${hx(a,4)} 0x${hx(b,4)}`; }
+    case 'transfer':{ const ta=rd16(s),tb=rd16(s+2),mn=rd16(s+4);
+      return ta===0xffff?'terminator':`train ${ta} → ${tb}: ${mn} min`; }
+    case 'u32ptr':{ const v=rd32(s); return v? `→ ${v}` : '0 · none / end'; }
+    case 'day':{ const v=rd16(s); return `day ${v} · ${dayDate(v)}`; }
+    case 'daytype':{ const k=((s-OFF.DATECAL)/2)|0; return `${dayDate(k)} · type 0x${hx(rd16(s),4)}`; }
+    case 'starec':{ const k=((s-OFF.STATTBL)/34)|0; return `station ${k}: ${nm(k)}`; }
+    case 'kmband':{ const v=rd16(s); return v===0xffff?'≤ ∞ (and above)':`≤ ${v} km`; }
+    case 'cents':  return `ƒ${(rd16(s)/100).toFixed(2)}`;
+    case 'smin':   return `${rds16(s)>=0?'+':''}${rds16(s)} min`;
+    default:{ const a=[]; for(let o=s;o<s+len&&o<s+8;o++) a.push(hx(BYTES[o],2));
+      return a.join(' ')+(len>8?` … (${len} B)`:''); }
+  }
+}
+
+/* ---- regions: map navigator ---- */
+function regionAt(o){ let lo=0,hi=DATA.regions.length-1;
+  while(lo<=hi){const m=(lo+hi)>>1,r=DATA.regions[m];
+    if(o<r.start)hi=m-1; else if(o>=r.end)lo=m+1; else return r;}
+  return DATA.regions[DATA.regions.length-1]; }
 const bar=document.getElementById('mapbar');
 DATA.regions.forEach(r=>{
-  const seg=document.createElement('div');
-  seg.className='seg'; seg.style.flex=(r.end-r.start)/N;
-  seg.style.setProperty('--c', catVar(r.cat));
+  const seg=document.createElement('div'); seg.className='seg';
+  seg.style.flex=(r.end-r.start)/N; seg.style.setProperty('--c',catVar(r.cat));
   seg.title=`${r.name}  ·  0x${hx(r.start,5)}–0x${hx(r.end,5)}  ·  ${(r.end-r.start).toLocaleString()} bytes`;
-  seg.addEventListener('click',()=>jumpTo(r.start));
-  bar.appendChild(seg);
+  seg.addEventListener('click',()=>jumpTo(r.start)); bar.appendChild(seg);
 });
-function markMap(o){
-  const ri=DATA.regions.findIndex(r=>o>=r.start&&o<r.end);
-  [...bar.children].forEach((c,i)=>c.classList.toggle('on', i===ri));
-}
+function markMap(o){ const ri=DATA.regions.findIndex(r=>o>=r.start&&o<r.end);
+  [...bar.children].forEach((c,i)=>c.classList.toggle('on',i===ri)); }
+
+/* ---- category legend (drives the byte colours) ---- */
+const CATS=[['index','station index'],['pointer','pointer / offset'],
+  ['len','length / count'],['time','time / runtime'],['mask','day mask'],
+  ['foot','footnote'],['train','train number'],['text','text'],
+  ['price','price'],['value','signed value'],['marker','marker / structure']];
+const lg=document.getElementById('legend');
+CATS.forEach(([c,label])=>{ const s=document.createElement('span');
+  s.style.setProperty('--c',catVar(c)); s.innerHTML=`<i></i>${label}`; lg.appendChild(s); });
 
 /* ---- column header ---- */
-let ch='';
-for(let c=0;c<16;c++) ch+=`<span class="hb pad${c===8?' gap':''}">${hx(c,2)}</span>`;
-document.getElementById('colhdr').innerHTML=ch;
+let colh='';
+for(let c=0;c<16;c++) colh+=`<span class="hb pad${c===8?' gap':''}">${hx(c,2)}</span>`;
+document.getElementById('colhdr').innerHTML=colh;
 
 /* ---- virtualized whole-file dump ---- */
 const ROWH=22, COLS=16, PAD=8;
@@ -556,94 +638,79 @@ const totalRows=Math.ceil(N/COLS);
 sizer.style.height=(totalRows*ROWH)+'px';
 const escMap={'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',' ':'&nbsp;'};
 const esc=ch=>escMap[ch]||ch;
-
 function render(){
   const st=scroll.scrollTop, vh=scroll.clientHeight;
-  const first=Math.max(0, Math.floor(st/ROWH)-PAD);
-  const last=Math.min(totalRows-1, Math.ceil((st+vh)/ROWH)+PAD);
+  const first=Math.max(0,Math.floor(st/ROWH)-PAD);
+  const last=Math.min(totalRows-1,Math.ceil((st+vh)/ROWH)+PAD);
   let html='';
   for(let r=first;r<=last;r++){
-    const base=r*COLS;
-    let hex='',asc='';
+    const base=r*COLS; let hex='',asc='';
     for(let c=0;c<COLS;c++){
-      const o=base+c;
-      const gap=c===8?' gap':'';
+      const o=base+c, gap=c===8?' gap':'';
       if(o>=N){ hex+=`<span class="hb pad${gap}"> </span>`; continue; }
-      const k=KINDLIST[kindOf[o]];
-      const anno=annoMap[o]?' anno':'';
-      hex+=`<span class="hb k-${k}${gap}${anno}" data-o="${o}">${hx(BYTES[o],2)}</span>`;
+      const fi=byteField[o], cat=TYPES[ftype[fi]].cat, fst=(o===fstart[fi])?' fst':'';
+      hex+=`<span class="hb c-${cat}${gap}${fst}" data-o="${o}">${hx(BYTES[o],2)}</span>`;
       const v=BYTES[o];
-      const pr=(v>=32&&v<127);
-      asc+= pr?`<b data-o="${o}">${esc(String.fromCharCode(v))}</b>`
-              :`<span class="np" data-o="${o}">·</span>`;
+      asc+= (v>=32&&v<127)?`<b data-o="${o}">${esc(String.fromCharCode(v))}</b>`
+                          :`<span class="np" data-o="${o}">·</span>`;
     }
     html+=`<div class="hv-row"><span class="hv-off">0x${hx(base,5)}</span>`+
           `<span class="hv-hex">${hex}</span><span class="hv-asc">${asc}</span></div>`;
   }
   rows.style.transform=`translateY(${first*ROWH}px)`;
   rows.innerHTML=html;
-  const midByte=Math.floor((st+vh/2)/ROWH)*COLS;
-  markMap(Math.min(midByte,N-1));
+  if(pinned>=0) paintRange(pinned);
+  markMap(Math.min(Math.floor((st+vh/2)/ROWH)*COLS,N-1));
 }
 let raf=null;
 scroll.addEventListener('scroll',()=>{ if(raf)return;
   raf=requestAnimationFrame(()=>{raf=null;render();}); });
 new ResizeObserver(render).observe(scroll);
+
+/* ---- hover / inspect ---- */
+const status=document.getElementById('status');
+let pinned=-1;
+function paintRange(fi){
+  const s=fstart[fi], e=fstart[fi+1];
+  rows.querySelectorAll('.on').forEach(x=>x.classList.remove('on'));
+  rows.querySelectorAll('[data-o]').forEach(el=>{
+    const o=+el.dataset.o; if(o>=s&&o<e) el.classList.add('on'); });
+}
+function inspect(o){
+  const fi=byteField[o], t=ftype[fi], r=regionAt(o), cat=TYPES[t].cat;
+  const s=fstart[fi], len=fstart[fi+1]-s;
+  status.style.setProperty('--c',catVar(cat));
+  const rng = len===1?`byte 0x${hx(s,5)}`:`0x${hx(s,5)}–0x${hx(fstart[fi+1]-1,5)} · ${len} B`;
+  status.innerHTML=`<span class="o">0x${hx(o,5)}</span>`+
+    `<span class="pill">${r.name}</span>`+
+    `<span class="fld">${TYPES[t].name}</span>`+
+    `<span class="val">= ${decodeField(fi)}</span>`+
+    `<span class="muted">${rng}</span>`;
+  pinned=fi; paintRange(fi); markMap(o);
+}
+rows.addEventListener('mouseover',e=>{ const el=e.target.closest('[data-o]');
+  if(el) inspect(+el.dataset.o); });
+scroll.addEventListener('mouseleave',()=>{
+  pinned=-1; rows.querySelectorAll('.on').forEach(x=>x.classList.remove('on'));
+  status.style.removeProperty('--c');
+  status.innerHTML='<span class="hint">Hover any byte to inspect it.</span>'; });
+
 render();
 
 function jumpTo(off){
   document.getElementById('whole').scrollIntoView({behavior:'smooth',block:'start'});
   scroll.scrollTop=Math.max(0,(Math.floor(off/COLS)-2))*ROWH;
-  render(); flash(off);
+  render(); inspect(off);
 }
-let flashTimer=null;
-function flash(off){
-  clearTimeout(flashTimer);
-  const el=rows.querySelector(`.hb[data-o="${off}"]`);
-  if(el){ el.classList.add('on');
-    flashTimer=setTimeout(()=>el.classList.remove('on'),1400); }
-}
-
-/* ---- status bar on hover ---- */
-const status=document.getElementById('status');
-const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-function inspect(o){
-  const r=regionAt(o), a=annoMap[o], v=BYTES[o];
-  const cat=a?a.cat:r.cat;
-  status.style.setProperty('--c', catVar(cat));
-  const ch=(v>=32&&v<127)?String.fromCharCode(v):'·';
-  let s=`<span class="o">0x${hx(o,5)}</span>`+
-    `<span class="pill">${r.name}</span>`+
-    `<span class="muted">byte</span> 0x${hx(v,2)} <span class="muted">(${v})</span>`+
-    `<span class="muted">char</span> ‘${ch==='·'?'<span class="muted">·</span>':ch}’`;
-  if(a) s+=` &nbsp;·&nbsp; <span class="fld">${a.lbl}</span> = ${a.val}`;
-  status.innerHTML=s;
-  markMap(o);
-}
-function clearStatus(){
-  status.style.removeProperty('--c');
-  status.innerHTML='<span class="hint">Hover any byte to inspect it.</span>';
-}
-rows.addEventListener('mouseover',e=>{
-  const t=e.target.closest('[data-o]'); if(!t) return;
-  const o=+t.dataset.o;
-  rows.querySelectorAll('.hb.on').forEach(x=>x.classList.remove('on'));
-  const cell=rows.querySelector(`.hb[data-o="${o}"]`);
-  if(cell) cell.classList.add('on');
-  inspect(o);
-});
-scroll.addEventListener('mouseleave',()=>{
-  rows.querySelectorAll('.hb.on').forEach(x=>x.classList.remove('on'));
-  clearStatus();
-});
 
 /* ================= annotated specimen cards ================= */
-const lg=document.getElementById('legend');
-DATA.legend.forEach(([cat,label])=>{
-  const s=document.createElement('span');
-  s.style.setProperty('--c', catVar(cat));
-  s.innerHTML=`<i></i>${label}`; lg.appendChild(s);
-});
+const SPECCATS=[['pointer','pointer / offset'],['index','station index'],
+  ['len','length / count'],['time','time / day'],['mask','day mask'],
+  ['foot','footnote'],['train','train number'],['text','text'],
+  ['price','price'],['value','signed value'],['marker','marker / zero']];
+const leg2=document.getElementById('leg2');
+SPECCATS.forEach(([c,label])=>{ const s=document.createElement('span');
+  s.style.setProperty('--c',catVar(c)); s.innerHTML=`<i></i>${label}`; leg2.appendChild(s); });
 const specHost=document.getElementById('specimens');
 function fmap(fields){const m={};fields.forEach((f,i)=>{for(let k=f[0];k<f[0]+f[1];k++)m[k]=i;});return m;}
 function renderDump(bytes,fields,base,specId,tag){
@@ -660,8 +727,7 @@ function renderDump(bytes,fields,base,specId,tag){
       const idx=row*perRow+c; if(idx>=bytes.length) break;
       const fi=fm[idx], b=bytes[idx];
       const cell=document.createElement('span');
-      cell.className='byte'+(c===8?' gap':'');
-      cell.textContent=hx(b,2);
+      cell.className='byte'+(c===8?' gap':''); cell.textContent=hx(b,2);
       if(fi!==undefined){ cell.style.setProperty('--c',catVar(fields[fi][2]));
         cell.dataset.fi=fi; cell.dataset.spec=specId; cell.dataset.tag=tag; }
       else{ cell.style.setProperty('--c','var(--cat-marker)'); cell.style.opacity=.4; }
@@ -672,28 +738,23 @@ function renderDump(bytes,fields,base,specId,tag){
         a.dataset.fi=fi; a.dataset.spec=specId; a.dataset.tag=tag; }
       asc.appendChild(a);
     }
-    hxtd.appendChild(wrap); tr.appendChild(hxtd); tr.appendChild(asc);
-    tbl.appendChild(tr);
+    hxtd.appendChild(wrap); tr.appendChild(hxtd); tr.appendChild(asc); tbl.appendChild(tr);
   }
   return tbl;
 }
 DATA.specimens.forEach(spec=>{
   const el=document.createElement('div'); el.className='spec';
   el.innerHTML=`<div class="spec-head"><h3>${spec.title}</h3>
-    <span class="kick">${spec.kicker}</span></div>
-    <p class="lead">${spec.lead}</p>`;
+    <span class="kick">${spec.kicker}</span></div><p class="lead">${spec.lead}</p>`;
   const jb=document.createElement('button'); jb.className='jump';
   jb.textContent='▸ show in full dump';
-  jb.addEventListener('click',()=>jumpTo(spec.base));
-  el.appendChild(jb);
+  jb.addEventListener('click',()=>jumpTo(spec.base)); el.appendChild(jb);
   const dw=document.createElement('div'); dw.className='dumpwrap';
   dw.appendChild(renderDump(spec.bytes,spec.fields,spec.base,spec.id,'main'));
-  if(spec.extra){
-    const sl=document.createElement('div'); sl.className='sublabel';
+  if(spec.extra){ const sl=document.createElement('div'); sl.className='sublabel';
     sl.textContent='↓ '+spec.extra.label+'  ·  0x'+hx(spec.extra.base,5);
     dw.appendChild(sl);
-    dw.appendChild(renderDump(spec.extra.bytes,spec.extra.fields,spec.extra.base,spec.id,'extra'));
-  }
+    dw.appendChild(renderDump(spec.extra.bytes,spec.extra.fields,spec.extra.base,spec.id,'extra')); }
   el.appendChild(dw);
   const det=document.createElement('div'); det.className='detail'; det.id='det-'+spec.id;
   det.innerHTML='<div class="hint">Hover a byte to read the field it belongs to.</div>';
@@ -704,56 +765,42 @@ function fieldsFor(spec,tag){const s=DATA.specimens.find(x=>x.id===spec);
 function clearSpec(spec){
   document.querySelectorAll(`.byte[data-spec="${spec}"],.ascb[data-spec="${spec}"]`)
     .forEach(b=>{b.classList.remove('on');b.classList.remove('dim');});
-  const det=document.getElementById('det-'+spec);
-  det.style.removeProperty('--c');
-  det.innerHTML='<div class="hint">Hover a byte to read the field it belongs to.</div>';
-}
+  const det=document.getElementById('det-'+spec); det.style.removeProperty('--c');
+  det.innerHTML='<div class="hint">Hover a byte to read the field it belongs to.</div>'; }
 function focusField(spec,tag,fi){
   const f=fieldsFor(spec,tag)[fi], cat=f[2];
   document.querySelectorAll(`.byte[data-spec="${spec}"]`).forEach(b=>{
-    if(b.dataset.tag===tag && b.dataset.fi==fi){b.classList.add('on');b.classList.remove('dim');}
-    else b.classList.add('dim');
-  });
+    if(b.dataset.tag===tag&&b.dataset.fi==fi){b.classList.add('on');b.classList.remove('dim');}
+    else b.classList.add('dim'); });
   document.querySelectorAll(`.ascb[data-spec="${spec}"]`).forEach(a=>{
-    a.classList.toggle('on', a.dataset.tag===tag && a.dataset.fi==fi);
-  });
-  const det=document.getElementById('det-'+spec);
-  det.style.setProperty('--c', catVar(cat));
-  const start=f[0], end=f[0]+f[1]-1;
-  const rng=f[1]===1?`byte ${start}`:`bytes ${start}–${end}`;
+    a.classList.toggle('on',a.dataset.tag===tag&&a.dataset.fi==fi); });
+  const det=document.getElementById('det-'+spec); det.style.setProperty('--c',catVar(cat));
+  const start=f[0],end=f[0]+f[1]-1, rng=f[1]===1?`byte ${start}`:`bytes ${start}–${end}`;
   det.innerHTML=`<div class="drow"><span class="lbl">${f[3]}</span>
     <span class="val">${f[4]}</span><span class="rng">${rng} · ${f[1]}×</span></div>
-    <p class="note">${f[5]}</p>`;
-}
-document.addEventListener('mouseover',e=>{
-  const t=e.target.closest('.byte,.ascb');
-  if(!t||t.dataset.fi===undefined) return;
-  focusField(t.dataset.spec,t.dataset.tag,+t.dataset.fi);
-});
-document.addEventListener('mouseout',e=>{
-  const t=e.target.closest('.byte,.ascb');
+    <p class="note">${f[5]}</p>`; }
+document.addEventListener('mouseover',e=>{ const t=e.target.closest('.byte,.ascb');
+  if(!t||t.dataset.fi===undefined) return; focusField(t.dataset.spec,t.dataset.tag,+t.dataset.fi); });
+document.addEventListener('mouseout',e=>{ const t=e.target.closest('.byte,.ascb');
   if(!t||t.dataset.spec===undefined) return;
   const to=e.relatedTarget&&e.relatedTarget.closest&&e.relatedTarget.closest('.byte,.ascb');
-  if(to&&to.dataset.spec===t.dataset.spec) return;
-  clearSpec(t.dataset.spec);
-});
-document.addEventListener('click',e=>{
-  const t=e.target.closest('.byte,.ascb');
-  if(!t||t.dataset.fi===undefined) return;
-  focusField(t.dataset.spec,t.dataset.tag,+t.dataset.fi);
-});
+  if(to&&to.dataset.spec===t.dataset.spec) return; clearSpec(t.dataset.spec); });
+document.addEventListener('click',e=>{ const t=e.target.closest('.byte,.ascb');
+  if(!t||t.dataset.fi===undefined) return; focusField(t.dataset.spec,t.dataset.tag,+t.dataset.fi); });
 </script>
 """
 
 DOC = ('<!DOCTYPE html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n'
        '<meta name="viewport" content="width=device-width, initial-scale=1">\n'
-       '<title>INLEES.NET — an annotated hexdump</title>\n</head>\n<body>\n'
+       '<title>INLEES.NET — every byte annotated</title>\n</head>\n<body>\n'
        '__FRAG__\n</body>\n</html>\n')
 
 frag = (FRAG
         .replace("__DATA__", DATA)
         .replace("__B64__", B64)
+        .replace("__FIELDS__", FIELDS_B64)
         .replace("__SIZE__", f"{FILESIZE:,}")
+        .replace("__NFIELDS__", f"{len(FIELDS):,}")
         .replace("__ENDHEX__", f"{FILESIZE:X}"))
 
 FRAG_OUT = os.path.join(REPO, "docs", "format_explainer.frag.html")
@@ -762,5 +809,5 @@ with open(OUT, "w") as f:
 with open(FRAG_OUT, "w") as f:
     f.write(frag)
 print(f"wrote {OUT} (standalone)")
-print(f"wrote {FRAG_OUT} (artifact fragment); file = {FILESIZE:,} bytes; "
-      f"frag = {len(frag):,} bytes")
+print(f"wrote {FRAG_OUT} (artifact fragment)")
+print(f"file={FILESIZE:,}  fields={len(FIELDS):,}  frag={len(frag):,} bytes")
